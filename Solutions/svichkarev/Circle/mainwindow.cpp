@@ -1,131 +1,98 @@
+#include <QGroupBox>
+#include <QMenu>
+#include <QMenuBar>
+#include <QFileDialog>
+#include <QVBoxLayout>
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "sizecontroller.h"
 
-#include <QtGui>
-
+// TODO:change hard coded constants !
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
 {
-    ui->setupUi(this);
-    drawPanel = ui->drawPanel;
+    int DEFAULT_R = 20;
+    QGroupBox* drawPanelBox = new QGroupBox(tr("Draw Panel"));
+    QVBoxLayout* panelLayout = new QVBoxLayout(drawPanelBox);
+    drawPanel = new DrawPanel(199, 200, DEFAULT_R, drawPanelBox);
+    panelLayout->addWidget(drawPanel);
+    drawPanelBox->setLayout(panelLayout);
 
-    // берём размеры виджета
-    sizeXDrawPanel = drawPanel->size().width();
-    sizeYDrawPanel = drawPanel->size().height();
+    QGroupBox* controllers = new QGroupBox(tr("Controllers"));
+    QVBoxLayout* cLayout = new QVBoxLayout(controllers);
 
-    // создание круга
-    img = new QImage( sizeXDrawPanel, sizeYDrawPanel, QImage::Format_RGB888 );
+    SizeController* xC = new SizeController(this, "Position X", -10000, 10000, 0);
+    SizeController* yC = new SizeController(this, "Position Y", -10000, 10000, 0);
+    SizeController* rC = new SizeController(this, "Radius", 0, 10000, DEFAULT_R);
 
-    dx = (float)sizeXDrawPanel/100;
-    dy = (float)sizeYDrawPanel/100;
-    dR = (float)sizeYDrawPanel/250;
+    cLayout->addWidget(xC);
+    cLayout->addWidget(yC);
+    cLayout->addWidget(rC);
+    controllers->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    controllers->setLayout(cLayout);
 
-    // квадрат радиуса круга
-    // чтобы на 100 делений хватило
-    R0 = (float)sizeYDrawPanel / 5;
-    // центр круга
-    x0 = (float)sizeXDrawPanel / 2;
-    y0 = (float)sizeYDrawPanel / 2;
+    QWidget* container = new QWidget(this);
+    QHBoxLayout* mainLayout = new QHBoxLayout(container);
+    mainLayout->addWidget(drawPanelBox);
+    mainLayout->addWidget(controllers);
+    container->setLayout(mainLayout);
 
-    // текущие значения - значения по умолчанию
-    curR = R0;
-    curX = x0;
-    curY = y0;
+    this->setCentralWidget(container);
 
-    sliderXPos = ui->sliderXPos;
-    sliderYPos = ui->sliderYPos;
-    sliderR = ui->sliderR;
+    QObject::connect(xC, SIGNAL(valueChanged(int)), drawPanel->getCircle(), SLOT(setX(int)));
+    QObject::connect(yC, SIGNAL(valueChanged(int)), drawPanel->getCircle(), SLOT(setY(int)));
+    QObject::connect(rC, SIGNAL(valueChanged(int)), drawPanel->getCircle(), SLOT(setR(int)));
 
-    spinXPos = ui->spinXPos;
-    spinYPos = ui->spinYPos;
-    spinR = ui->spinR;
+    QObject::connect(drawPanel->getCircle(), SIGNAL(changeX(int)), xC, SLOT(setValue(int)));
+    QObject::connect(drawPanel->getCircle(), SIGNAL(changeY(int)), yC, SLOT(setValue(int)));
+    QObject::connect(drawPanel->getCircle(), SIGNAL(changeR(int)), rC, SLOT(setValue(int)));
 
-    // устанавливаем обработчики
-    QObject::connect( sliderXPos, SIGNAL(valueChanged(int)), this, SLOT(changeSliderXPos(int)) );
-    QObject::connect( sliderYPos, SIGNAL(valueChanged(int)), this, SLOT(changeSliderYPos(int)) );
-    QObject::connect( sliderR,    SIGNAL(valueChanged(int)), this, SLOT(changeSliderR(int)) );
+    QMenuBar *menuBar = new QMenuBar(this);
+    QMenu* menu = new QMenu(tr("File"), menuBar);
+    QAction* openAction = menu->addAction(tr("Open"));
+    QAction* saveAction = menu->addAction(tr("Save"));
+    QObject::connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked(bool)));
+    QObject::connect(saveAction, SIGNAL(triggered(bool)), this, SLOT(saveClicked(bool)));
 
-    QObject::connect( spinXPos, SIGNAL(valueChanged(double)), this, SLOT(changeSpinXPos(double)) );
-    QObject::connect( spinYPos, SIGNAL(valueChanged(double)), this, SLOT(changeSpinYPos(double)) );
-    QObject::connect( spinR,    SIGNAL(valueChanged(double)), this, SLOT(changeSpinR(double)) );
+    menuBar->addMenu(menu);
 
-    //? устанавливаем главный менеджер компоновки
-    //setLayout(ui->mainformLayout);
+    this->setMenuBar(menuBar);
+    this->setWindowTitle(tr("Circle"));
 }
 
-MainWindow::~MainWindow()
+void MainWindow::openClicked(bool  )
 {
-    delete ui;
+    // TODO:
+    // open dialog
+    QFileDialog* fileDialog = new QFileDialog(this);
+    fileDialog->setFileMode( QFileDialog::ExistingFile);
+    fileDialog->setNameFilter(tr("*.xml"));
+    QStringList fileNames;
+    if (fileDialog->exec())
+        fileNames = fileDialog->selectedFiles();
+    else {
+        return;
+    }
+    try {
+        drawPanel->getCircle()->read(fileNames.at(0).toStdString());
+    } catch(...) {
+        // TODO:
+    }
 }
-
-void MainWindow::changeSliderXPos( int val ){
-    int shift = -(50 - val);
-    spinXPos->setValue( val );
-    curX = x0 + dx*shift;
-    update();
-}
-
-void MainWindow::changeSliderYPos( int val ){
-    int shift = 50 - val;
-    spinYPos->setValue( val );
-    curY = y0 + dy*shift;
-    update();
-}
-
-void MainWindow::changeSliderR( int val ){
-    int shift = -(50 - val);
-    spinR->setValue( val );
-    curR = R0 + dR*shift;
-    update();
-}
-
-void MainWindow::changeSpinXPos( double val ){
-    double shift = -(50.0 - val);
-    sliderXPos->setValue((int)val);
-    curX = x0 + dx*shift;
-    update();
-}
-
-void MainWindow::changeSpinYPos( double val ){
-    double shift = 50.0 - val;
-    sliderYPos->setValue((int)val);
-    curY = y0 + dy*shift;
-    update();
-}
-
-void MainWindow::changeSpinR( double val ){
-    double shift = -(50.0 - val);
-    sliderR->setValue((int)val);
-    curR = R0 + dR*shift;
-    update();
-}
-
-// после update сюда заходим
-void MainWindow::paintEvent(QPaintEvent * /* event */)
+void MainWindow::saveClicked(bool  )
 {
-    static const uchar colors[2][3] = { { 0  , 168, 107}, // цвет круга
-                                        { 255, 255, 255} }; // цвет фона
+    // TODO:
+    QFileDialog* fileDialog = new QFileDialog(this);
+    fileDialog->setFileMode( QFileDialog::Directory);
+    fileDialog->setNameFilter(tr("*.xml"));
+    QString filename = QFileDialog::getSaveFileName(fileDialog,
+                                                    tr("Save settings"),
+                                                    QDir::currentPath(),
+                                                    tr("Documents (*.xml)"));
+    if( !filename.isNull() )
+    {
+        this->drawPanel->getCircle()->save(filename.toStdString());
+    } else {
+        qDebug("fileName is null");
+    }
 
-    // считали массив, чтоб каждый раз не вызывать функцию
-    static uchar *field = img->bits();
-    // число байтов в строке для отступа
-    static int bPL = img->bytesPerLine();
-
-    // квадрат радиуса
-    //? можно ещё пооптимизировать!
-    float rr = curR * curR;
-    for( int y = 0; y < sizeYDrawPanel; y++ ){
-        for( int x = 0; x < sizeXDrawPanel; x++ ){
-            if( ((float)x-curX)*((float)x-curX)+((float)y-curY)*((float)y-curY) <= rr ){
-                memcpy( field + y*bPL + x*3, colors[0], 3 );
-            } else{
-                memcpy( field + y*bPL + x*3, colors[1], 3 );
-            }
-        }
-     }
-
-    QPainter painter(this);
-
-    painter.drawImage( 0, 0, *img );
 }
