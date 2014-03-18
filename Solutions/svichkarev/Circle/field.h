@@ -15,7 +15,7 @@ public:
     void setH(int h);
 
     void save(const std::string & fileName);
-    void drawPixel(int x, int y, const RGBColor& color);
+    void drawPixel(int x, int y, const QColor& color);
 };
 
 #endif // FIELD_H

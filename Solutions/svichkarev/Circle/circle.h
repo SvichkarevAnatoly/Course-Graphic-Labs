@@ -15,7 +15,7 @@ class Circle : public QObject
     int h;
 public:
     explicit Circle(int x, int y, int r, QObject *parent = 0);
-    void draw(Canvas* pBackBuffer, const RGBColor& color);
+    void draw(Canvas* pBackBuffer, const QColor& color);
     void read(const std::string& fileName);
     void save(const std::string& fileName);
     int getW() const;

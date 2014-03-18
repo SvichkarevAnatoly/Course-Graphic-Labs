@@ -16,7 +16,7 @@ class DrawPanel : public QWidget, Canvas
     QImage backBuffer;
 public:
     explicit DrawPanel(int w, int h, int r, QWidget *parent = 0);
-    void drawPixel(int x, int y, const RGBColor& color);
+    void drawPixel(int x, int y, const QColor& color);
     Circle* getCircle() const;
 protected:
     void paintEvent(QPaintEvent *event);

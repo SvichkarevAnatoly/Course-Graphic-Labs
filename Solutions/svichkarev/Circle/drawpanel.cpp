@@ -15,12 +15,12 @@ DrawPanel::DrawPanel(int w, int h, int r, QWidget *parent) :
 
 }
 
-void DrawPanel::drawPixel(int x, int y, const RGBColor& color)
+void DrawPanel::drawPixel(int x, int y, const QColor& color)
 {
     uchar* bytes = backBuffer.bits();
-    bytes[ y * backBuffer.bytesPerLine() + x * 3    ] = color.R;
-    bytes[ y * backBuffer.bytesPerLine() + x * 3 + 1] = color.G;
-    bytes[ y * backBuffer.bytesPerLine() + x * 3 + 2] = color.B;
+    bytes[ y * backBuffer.bytesPerLine() + x * 3    ] = color.red();
+    bytes[ y * backBuffer.bytesPerLine() + x * 3 + 1] = color.green();
+    bytes[ y * backBuffer.bytesPerLine() + x * 3 + 2] = color.blue();
 
 }
 
@@ -35,11 +35,8 @@ void DrawPanel::paintEvent(QPaintEvent * )
         return;
     }
     memset(pubBuffer, 0, backBuffer.byteCount());
-    //
-    RGBColor color;
-    color.R = 100;
-    color.G = 200;
-    color.B = 120;
+
+    QColor color( 100, 200, 120 );
 
     backBuffer.fill(Qt::white);
     if (pCircle)

@@ -49,13 +49,12 @@ int Circle::getH() const
     return h;
 }
 
-void Circle::draw(Canvas *c, const RGBColor& color )
-{
-    if (!c)
-    {
+void Circle::draw( Canvas *c, const QColor& color ){
+    if( !c ){ // TODO:
         return;
     }
 
+    // TODO: why all with this?
     double X0 = this->centreX +c->getWidth()*1.0/2;
     double Y0 = this->centreY +c->getHeight()*1.0/2;
     int r = this->radius;
@@ -63,8 +62,7 @@ void Circle::draw(Canvas *c, const RGBColor& color )
     double leftY = Y0 - r > 0 ? Y0 - r : 0;
     double rightY= Y0 + r < c->getHeight() ? Y0 + r : c->getHeight() - 1;
 
-
-    double sq_r = pow(r,2);
+    double sq_r = pow(r,2); // FIXME: pow
 
     for (int y = leftY; y <= rightY; ++y) {
         double sq = sqrt(sq_r - pow((y-Y0),2));
@@ -73,8 +71,8 @@ void Circle::draw(Canvas *c, const RGBColor& color )
         if (xa < 0) xa = 0;
         if (xb >= c->getWidth()) xb = c->getWidth()-1;
 
-        for (int x = round(xa); x <= xb; ++x) {
-            c->drawPixel(x, y , color);
+        for (int x = round(xa); x <= xb; ++x) { // FIXME: double -> int
+            c->drawPixel( x, y , color );
         }
     }
 }

@@ -31,9 +31,10 @@ void Field::save(const std::string& fileName) {
 
 }
 
-void Field::drawPixel(int x, int y, const RGBColor& color) {
-    image.bits()[y * this->width*3 + x*3    ] = color.R;
-    image.bits()[y * this->width*3 + x*3 + 1] = color.G;
-    image.bits()[y * this->width*3 + x*3 + 2] = color.B;
+// TODO: double drawpixel
+void Field::drawPixel( int x, int y, const QColor& color ) {
+    image.bits()[y * this->width*3 + x*3    ] = color.red();
+    image.bits()[y * this->width*3 + x*3 + 1] = color.green();
+    image.bits()[y * this->width*3 + x*3 + 2] = color.blue();
 
 }

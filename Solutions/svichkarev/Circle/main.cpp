@@ -7,28 +7,24 @@
 #include "circle.h"
 #include "mainwindow.h"
 
-int main(int argc, char** argv)
-{
-    if (argc > 1) {
-        QCoreApplication app(argc, argv);
-        QTextStream out(stdout);
-        if (argc == 2) {
-            Circle circle(0, 0, 20);
+int main( int argc, char** argv ){
+    if( argc > 1 ){ // if there are arguments
+        QCoreApplication app( argc, argv ); // TODO: why?
+        QTextStream out( stdout );
+        if( argc == 2 ){
+            Circle circle( 0, 0, 20 );
 
-            try {
+            try{
                 // read file
-                circle.read(argv[1]);
-            }
-            catch (...) {
+                circle.read( argv[ 1 ] );
+            }catch(...){
                 out << "Reading circle settings  error" << endl;
             }
-            RGBColor color;
-            color.R = 100;
-            color.G = 250;
-            color.B = 200;
 
-            Field field(circle.getW(), circle.getH());
-            circle.draw(&field, color);
+            const QColor color( 100, 250, 200 );
+
+            Field field(circle.getW(), circle.getH()); // TODO:
+            circle.draw( &field, color ); // TODO:
             try {
                 field.save("output.png");
             } catch(...) {
@@ -41,7 +37,7 @@ int main(int argc, char** argv)
 
         }
 
-        app.exit();
+        app.exit(); // TODO:
     } else {
         QApplication app(argc, argv);
         MainWindow window;

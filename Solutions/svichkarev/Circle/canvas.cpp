@@ -5,6 +5,7 @@ Canvas::Canvas(int w, int h) :
 {
 
 }
+
 Canvas::~Canvas(){}
 
 int Canvas::getHeight() const {

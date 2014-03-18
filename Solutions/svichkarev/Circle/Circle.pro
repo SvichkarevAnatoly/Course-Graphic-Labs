@@ -12,7 +12,6 @@ HEADERS += canvas.h \
            drawpanel.h \
            field.h \
            mainwindow.h \
-           rgbcolor.h \
            sizecontroller.h
 SOURCES += canvas.cpp \
            circle.cpp \
