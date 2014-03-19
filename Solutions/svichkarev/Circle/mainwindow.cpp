@@ -10,42 +10,51 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    int DEFAULT_R = 20;
-    QGroupBox* drawPanelBox = new QGroupBox(tr("Draw Panel"));
-    QVBoxLayout* panelLayout = new QVBoxLayout(drawPanelBox);
-    drawPanel = new DrawPanel(199, 200, DEFAULT_R, drawPanelBox);
+    int DEFAULT_R = 20; // TODO: wtf?
+    QGroupBox* drawPanelBox = new QGroupBox( tr("Draw Panel") );
+    QVBoxLayout* panelLayout = new QVBoxLayout( drawPanelBox );
+    // TODO: why 199?
+    drawPanel = new DrawPanel( 199, 200, DEFAULT_R, drawPanelBox );
     panelLayout->addWidget(drawPanel);
-    drawPanelBox->setLayout(panelLayout);
+    drawPanelBox->setLayout( panelLayout );
 
-    QGroupBox* controllers = new QGroupBox(tr("Controllers"));
-    QVBoxLayout* cLayout = new QVBoxLayout(controllers);
+    QGroupBox* controllers = new QGroupBox( tr("Controllers") );
+    QVBoxLayout* cLayout = new QVBoxLayout( controllers );
 
-    SizeController* xC = new SizeController(this, "Position X", -10000, 10000, 0);
-    SizeController* yC = new SizeController(this, "Position Y", -10000, 10000, 0);
-    SizeController* rC = new SizeController(this, "Radius", 0, 10000, DEFAULT_R);
+    // TODO: нужно оставить для числового значения, но для слайдера поменять
+    SizeController* xC = new SizeController( this, "Position X", -10000, 10000, 0);
+    SizeController* yC = new SizeController( this, "Position Y", -10000, 10000, 0);
+    SizeController* rC = new SizeController( this, "Radius", 0, 10000, DEFAULT_R);
 
-    cLayout->addWidget(xC);
-    cLayout->addWidget(yC);
-    cLayout->addWidget(rC);
-    controllers->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    controllers->setLayout(cLayout);
+    cLayout->addWidget( xC );
+    cLayout->addWidget( yC );
+    cLayout->addWidget( rC );
+    controllers->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+    // TODO: зачем мы связываем в две стороны?
+    controllers->setLayout( cLayout );
 
+    // TODO: почему именно так?
     QWidget* container = new QWidget(this);
     QHBoxLayout* mainLayout = new QHBoxLayout(container);
     mainLayout->addWidget(drawPanelBox);
     mainLayout->addWidget(controllers);
     container->setLayout(mainLayout);
 
+    // устанавливаем главный виджет
     this->setCentralWidget(container);
 
+    // изменили значения контролов, нужно вызвать отрисовку и установить новые значения параметров
+    // TODO: в каком порядке отрабатывают методы?
     QObject::connect(xC, SIGNAL(valueChanged(int)), drawPanel->getCircle(), SLOT(setX(int)));
     QObject::connect(yC, SIGNAL(valueChanged(int)), drawPanel->getCircle(), SLOT(setY(int)));
     QObject::connect(rC, SIGNAL(valueChanged(int)), drawPanel->getCircle(), SLOT(setR(int)));
 
+    // TODO: зачем обратную связь делать?
     QObject::connect(drawPanel->getCircle(), SIGNAL(changeX(int)), xC, SLOT(setValue(int)));
     QObject::connect(drawPanel->getCircle(), SIGNAL(changeY(int)), yC, SLOT(setValue(int)));
     QObject::connect(drawPanel->getCircle(), SIGNAL(changeR(int)), rC, SLOT(setValue(int)));
 
+    // Создание меню и привязываем действия
     QMenuBar *menuBar = new QMenuBar(this);
     QMenu* menu = new QMenu(tr("File"), menuBar);
     QAction* openAction = menu->addAction(tr("Open"));
@@ -55,12 +64,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     menuBar->addMenu(menu);
 
-    this->setMenuBar(menuBar);
-    this->setWindowTitle(tr("Circle"));
+    // добавляем меню и заголовок изменяем
+    this->setMenuBar( menuBar );
+    this->setWindowTitle( tr("Circle") );
 }
 
-void MainWindow::openClicked(bool  )
-{
+// TODO: ещё непонятно как это работает
+void MainWindow::openClicked( bool ){
     // TODO:
     // open dialog
     QFileDialog* fileDialog = new QFileDialog(this);
@@ -78,8 +88,9 @@ void MainWindow::openClicked(bool  )
         // TODO:
     }
 }
-void MainWindow::saveClicked(bool  )
-{
+
+// TODO: ещё непонятно как это работает
+void MainWindow::saveClicked( bool ){
     // TODO:
     QFileDialog* fileDialog = new QFileDialog(this);
     fileDialog->setFileMode( QFileDialog::Directory);
@@ -88,10 +99,9 @@ void MainWindow::saveClicked(bool  )
                                                     tr("Save settings"),
                                                     QDir::currentPath(),
                                                     tr("Documents (*.xml)"));
-    if( !filename.isNull() )
-    {
+    if( !filename.isNull() ){
         this->drawPanel->getCircle()->save(filename.toStdString());
-    } else {
+    }else{
         qDebug("fileName is null");
     }
 

@@ -3,8 +3,9 @@
 
 #include <QColor>
 
+// класс полотна, можем рисовать пикселы
 class Canvas{
-protected:
+protected: // TODO: почему не private?
     int width;
     int height;
 public:

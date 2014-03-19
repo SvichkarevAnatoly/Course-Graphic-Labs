@@ -23,10 +23,10 @@ int main( int argc, char** argv ){
 
             const QColor color( 100, 250, 200 );
 
-            Field field(circle.getW(), circle.getH()); // TODO:
+            Field field( circle.getW(), circle.getH() ); // TODO:
             circle.draw( &field, color ); // TODO:
             try {
-                field.save("output.png");
+                field.save( "output.png" );
             } catch(...) {
                 // TODO :
                 out << "error "  << endl;

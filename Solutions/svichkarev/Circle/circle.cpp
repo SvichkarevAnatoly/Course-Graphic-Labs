@@ -2,13 +2,13 @@
 #include <QXmlStreamWriter>
 #include <QFile>
 #include <cmath>
-#include <QDebug>
+#include <QDebug> // TODO: зачем?
 #include "circle.h"
 
-Circle::Circle(int x, int y, int r, QObject *parent) :
+Circle::Circle( int x, int y, int r, QObject *parent ) :
     QObject(parent)
 {
-    // todo : harcode =/
+    // TODO : harcode =/
     this->w = 100;
     this->h = 100;
     this->setX(x);
@@ -16,45 +16,40 @@ Circle::Circle(int x, int y, int r, QObject *parent) :
     this->setR(r);
 }
 
-void Circle::setX(int x)
-{
-
-    qDebug()  << x ;
+void Circle::setX( int x ){
+    qDebug()  << x;
     this->centreX = x;
-    emit changeX(x);
+    emit changeX( x );
 }
-void Circle::setY(int y)
-{
 
-    qDebug() << y ;
+void Circle::setY( int y ){
+    qDebug() << y;
     this->centreY = y;
-    emit changeY(y);
+    emit changeY( y );
 }
 
-void Circle::setR(int r)
-{
-
+void Circle::setR( int r ){
     qDebug()   << r;
     this->radius = r;
-    emit changeR(r);
+    emit changeR( r );
 }
 
-int Circle::getW() const
-{
+int Circle::getW() const{
     return w;
 }
 
-int Circle::getH() const
-{
+int Circle::getH() const{
     return h;
 }
 
+// Главный метод всей лабы - отрисовка круга
 void Circle::draw( Canvas *c, const QColor& color ){
-    if( !c ){ // TODO:
+    if( !c ){ // TODO: надо кидать исключение
         return;
     }
 
     // TODO: why all with this?
+    // TODO: по идее это константы, их не обязательно каждый раз высчитывать
     double X0 = this->centreX +c->getWidth()*1.0/2;
     double Y0 = this->centreY +c->getHeight()*1.0/2;
     int r = this->radius;
@@ -64,7 +59,7 @@ void Circle::draw( Canvas *c, const QColor& color ){
 
     double sq_r = pow(r,2); // FIXME: pow
 
-    for (int y = leftY; y <= rightY; ++y) {
+    for( int y = leftY; y <= rightY; ++y ){
         double sq = sqrt(sq_r - pow((y-Y0),2));
         double xa = ( -1 * sq  + X0 );
         double xb = (      sq  + X0 );
@@ -77,6 +72,8 @@ void Circle::draw( Canvas *c, const QColor& color ){
     }
 }
 
+// TODO: разобраться
+// метод парсинга входного файла
 void Circle::read(const std::string &fileName)
 { // todo check min max
      QFile *file = new QFile(fileName.c_str());
@@ -134,8 +131,9 @@ void Circle::read(const std::string &fileName)
      delete file;
 }
 
-void Circle::save(const std::string &fileName)
-{ //
+// TODO: разобраться
+// метод сохранения в файл круга
+void Circle::save(const std::string &fileName){
     qDebug ( "save" );
     QFile *file = new QFile(fileName.c_str());
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text))

@@ -9,14 +9,14 @@
 #include <QPainter>
 #include <QPaintEvent>
 
-class DrawPanel : public QWidget, Canvas
-{
+class DrawPanel : public QWidget, Canvas{
     Q_OBJECT
     Circle* pCircle;
     QImage backBuffer;
 public:
-    explicit DrawPanel(int w, int h, int r, QWidget *parent = 0);
-    void drawPixel(int x, int y, const QColor& color);
+    // TODO: зачем здесь explicit?
+    explicit DrawPanel( int w, int h, int r, QWidget *parent = 0 );
+    void drawPixel( int x, int y, const QColor& color );
     Circle* getCircle() const;
 protected:
     void paintEvent(QPaintEvent *event);

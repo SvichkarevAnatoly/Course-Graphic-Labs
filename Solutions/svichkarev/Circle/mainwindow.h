@@ -14,8 +14,8 @@ public:
 
 signals:
 public slots:
-    void openClicked(bool checked );
-    void saveClicked(bool checked );
+    void openClicked( bool checked );
+    void saveClicked( bool checked );
 };
 
 #endif // MAINWINDOW_H

@@ -3,11 +3,11 @@
 Canvas::Canvas(int w, int h) :
     width(w), height(h)
 {
-
 }
 
 Canvas::~Canvas(){}
 
+// TODO: зачем везде эти this?
 int Canvas::getHeight() const {
     return this->height;
 }

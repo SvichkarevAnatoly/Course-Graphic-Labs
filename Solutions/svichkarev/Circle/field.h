@@ -5,17 +5,16 @@
 #include <QImage>
 #include "canvas.h"
 
-class Field : public Canvas
-{
+class Field : public Canvas{
     QImage image;
 public:
-    Field(int w, int h);
-    ~Field();
-    void setW(int w);
-    void setH(int h);
+    Field( int w, int h );
+    ~Field(); // TODO: почему не виртуальный?
+    void setW( int w );
+    void setH( int h );
 
-    void save(const std::string & fileName);
-    void drawPixel(int x, int y, const QColor& color);
+    void save( const std::string & fileName );
+    void drawPixel( int x, int y, const QColor& color );
 };
 
 #endif // FIELD_H

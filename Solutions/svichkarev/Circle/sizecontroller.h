@@ -8,23 +8,23 @@
 #include <QSpinBox>
 #include <QSlider>
 
-class SizeController : public QWidget
-{
+class SizeController : public QWidget{
     Q_OBJECT
-    QGridLayout layout;
-    QLabel label;
-    QSpinBox spinEditor;
-    QSlider slider;
+    QGridLayout layout; // TODO: for what this layout?
+    QLabel label; // надпись контрола
+    QSpinBox spinEditor; // текстовое поле с кнопками
+    QSlider slider; // движок
     int min;
     int max;
     int value;
 public:
-    SizeController(QWidget*,const std::string& label, int min, int max, int val);
+    // TODO: QWidget
+    SizeController( QWidget*,const std::string& label, int min, int max, int val );
     int getValue() const;
 protected slots:
-    void setValue(int v);
+    void setValue( int v );
 signals:
-    void valueChanged(int newValue);
+    void valueChanged( int newValue );
 
 };
 
