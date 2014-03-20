@@ -7,7 +7,6 @@
 #include <QFileDialog>
 #include <QVBoxLayout>
 
-// TODO:change hard coded constants !
 MainWindow::MainWindow( QWidget * parent ) :
     QMainWindow( parent ) // создали QT-шное окно в конструкторе родителя
 {
@@ -17,19 +16,15 @@ MainWindow::MainWindow( QWidget * parent ) :
 
     drawPanel = new DrawPanel( DrawPanel::DEFAULT_WIDTH, DrawPanel::DEFAULT_HEIGHT, drawPanelBox );
 
-    // TODO: надо ресурсы где-то освобождать
-
     panelLayout->addWidget( drawPanel );
 
     // создание группы для контролов
     QGroupBox* controllers = new QGroupBox( tr("Controllers") );
     QVBoxLayout* cLayout = new QVBoxLayout( controllers );
 
-    // TODO: нужно оставить для числового значения, но для слайдера поменять
-    // TODO: почему константы именно такие
-    SizeController* xC = new SizeController( this, "Position X", -10000, 10000, Circle::DEFAULT_CENTER_X);
-    SizeController* yC = new SizeController( this, "Position Y", -10000, 10000, Circle::DEFAULT_CENTER_Y);
-    SizeController* rC = new SizeController( this, "Radius", 0, 10000, Circle::DEFAULT_RADIUS);
+    SizeController* xC = new SizeController( this, "Position X", -SizeController::DEFAULT_MAX_VALUE, SizeController::DEFAULT_MAX_VALUE, Circle::DEFAULT_CENTER_X);
+    SizeController* yC = new SizeController( this, "Position Y", -SizeController::DEFAULT_MAX_VALUE, SizeController::DEFAULT_MAX_VALUE, Circle::DEFAULT_CENTER_Y);
+    SizeController* rC = new SizeController( this, "Radius", 0, SizeController::DEFAULT_MAX_VALUE, Circle::DEFAULT_RADIUS);
 
     cLayout->addWidget( xC );
     cLayout->addWidget( yC );
@@ -46,15 +41,13 @@ MainWindow::MainWindow( QWidget * parent ) :
     mainLayout->addWidget( controllers );
 
     // устанавливаем начинку главному виджету
-    this->setCentralWidget(container);
+    setCentralWidget(container);
 
     // изменили значения контролов, нужно вызвать отрисовку и установить новые значения параметров
-    // TODO: вызвать команду перерисовки только у панели, она сама отрисует всех
     QObject::connect( xC, SIGNAL( valueChanged(int) ), drawPanel->getCircle(), SLOT( setX(int) ));
     QObject::connect( yC, SIGNAL( valueChanged(int) ), drawPanel->getCircle(), SLOT( setY(int) ));
     QObject::connect( rC, SIGNAL( valueChanged(int) ), drawPanel->getCircle(), SLOT( setR(int) ));
 
-    //TODO:
     /*По идее архитектура должна быть построена так:
         Вызывается сигнал, мы у области рисования вызываем слот перерисовки.
         В области рисования у нас есть разные объекты для отрисовки.
@@ -70,8 +63,7 @@ MainWindow::MainWindow( QWidget * parent ) :
     QMenu* menu = new QMenu(tr("File"), menuBar);
     QAction* openAction = menu->addAction( tr("Open") );
     QAction* saveAction = menu->addAction( tr("Save") );
-    // TODO: зачем меню передавать bool?
-    // TODO: можно вызывать слоты сразу у полотна, оно само разберётся( вызовет у класса утилиты сохранение )
+
     QObject::connect( openAction, SIGNAL( triggered() ), this, SLOT( openClicked() ));
     QObject::connect( saveAction, SIGNAL( triggered() ), this, SLOT( saveClicked() ));
 
@@ -84,40 +76,7 @@ MainWindow::MainWindow( QWidget * parent ) :
 
 
 // TODO: ещё непонятно как это работает
-void MainWindow::openClicked(){
-    // TODO:
-    // open dialog
-    QFileDialog* fileDialog = new QFileDialog(this);
-    fileDialog->setFileMode( QFileDialog::ExistingFile);
-    fileDialog->setNameFilter(tr("*.xml"));
-    QStringList fileNames;
-    if (fileDialog->exec())
-        fileNames = fileDialog->selectedFiles();
-    else {
-        return;
-    }
-    try {
-        // TODO: здесь надо что-то типо создать объект круга и добавить его в панель, в идеале фабрику даже
-        drawPanel->getCircle()->read(fileNames.at(0).toStdString());
-    } catch(...) {
-        // TODO:
-    }
-}
+void MainWindow::openClicked(){}
 
 // TODO: ещё непонятно как это работает
-void MainWindow::saveClicked(){
-    // TODO:
-    QFileDialog* fileDialog = new QFileDialog(this);
-    fileDialog->setFileMode( QFileDialog::Directory);
-    fileDialog->setNameFilter(tr("*.xml"));
-    QString filename = QFileDialog::getSaveFileName(fileDialog,
-                                                    tr("Save settings"),
-                                                    QDir::currentPath(),
-                                                    tr("Documents (*.xml)"));
-    if( !filename.isNull() ){
-        this->drawPanel->getCircle()->save(filename.toStdString());
-    }else{
-        qDebug("fileName is null");
-    }
-
-}
+void MainWindow::saveClicked(){}

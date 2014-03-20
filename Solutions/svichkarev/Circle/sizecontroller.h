@@ -10,18 +10,21 @@
 
 class SizeController : public QWidget{
     Q_OBJECT
-    QGridLayout layout; // TODO: for what this layout?
+public:
+    static const int DEFAULT_MAX_VALUE = 1000;
+private:
+    QGridLayout layout; // для расположения движков
     QLabel label; // надпись контрола
     QSpinBox spinEditor; // текстовое поле с кнопками
     QSlider slider; // движок
+
     int min;
     int max;
     int value;
 public:
-    // TODO: QWidget
-    SizeController( QWidget*,const std::string& label, int min, int max, int val );
+    SizeController( QWidget*, const std::string & label, int min, int max, int val );
     int getValue() const;
-protected slots: // TODO: почему protected?
+protected slots:
     void setValue( int v );
 signals:
     void valueChanged( int newValue );

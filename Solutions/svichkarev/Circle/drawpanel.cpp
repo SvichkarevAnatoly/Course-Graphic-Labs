@@ -1,14 +1,18 @@
 #include "drawpanel.h"
 
+#include <QDebug>  //TODO: убрать
+
+const QColor DrawPanel::DEFAULT_COLOR( 100, 200, 120 );
+
 DrawPanel::DrawPanel( int minW, int minH, QWidget *parent ) :
-    QWidget( parent )
+    QWidget( parent ), oldWidth( width() ), oldHeight( height() )
 {
-    // TODO: где деструктор?
     pCircle = new Circle( Circle::DEFAULT_CENTER_X, Circle::DEFAULT_CENTER_Y, Circle::DEFAULT_RADIUS );
 
     // минимальные размеры устанавливаем
     setMinimumSize( minW, minH );
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
 
     // устанавливаем обработчики на изменения, перерисовку qt вызовет
     QObject::connect( pCircle, SIGNAL( changeX(int) ), this, SLOT( repaint() ) );
@@ -16,46 +20,33 @@ DrawPanel::DrawPanel( int minW, int minH, QWidget *parent ) :
     QObject::connect( pCircle, SIGNAL( changeR(int) ), this, SLOT( repaint() ) );
 }
 
-// отрисовка пикселя
-void DrawPanel::drawPixel( int x, int y, const QColor & color ){
-    // TODO: можно сделать массив статическим, тогда не нужно будет каждый раз вызывать
-    //или лучше членов класса
-    uchar* bytes = backBuffer.bits();
-    bytes[ y * backBuffer.bytesPerLine() + x * 3     ] = color.red();
-    bytes[ y * backBuffer.bytesPerLine() + x * 3 + 1 ] = color.green();
-    bytes[ y * backBuffer.bytesPerLine() + x * 3 + 2 ] = color.blue();
+DrawPanel::~DrawPanel(){
+    delete pCircle;
+    delete backBuffer;
 }
 
+// вызывается в repaint()
 void DrawPanel::paintEvent( QPaintEvent * ){
-    QPainter painter( this ); // TODO: ?
-    backBuffer = QImage( width(), height(), QImage::Format_RGB888 );
+    QPainter painter( this );
+    // если изменились размеры - пересоздать
+    if( !((oldHeight == height()) &&
+            (oldWidth == width())) ){
 
-    uchar * pubBuffer = backBuffer.bits();
-    if( !pubBuffer ){ // TODO: ?
-        return;
+        delete backBuffer;
+        oldHeight = height();
+        oldWidth = width();
+        backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
+        qDebug()   << "reee"; //TODO: убрать
     }
-    // TODO: ?
-    memset( pubBuffer, 0, backBuffer.byteCount() );
 
-    QColor color( 100, 200, 120 ); // TODO: ?
-
-    backBuffer.fill( Qt::white ); // TODO: ?
     if( pCircle ){
-        pCircle->draw( this, color );
+        pCircle->draw( backBuffer, DEFAULT_COLOR );
     }
 
-    // TODO: ?
-    painter.drawImage( 0, 0, backBuffer );
+    painter.drawImage( 0, 0, *backBuffer );
 }
 
 // для доставания из панели
 Circle* DrawPanel::getCircle() const {
     return pCircle;
-}
-
-// перерисовка при изменении размера окна
-// TODO: нужна ли вообще?
-void DrawPanel::resizeEvent (QResizeEvent* event ){
-    QWidget::resizeEvent( event );
-    this->update();
 }

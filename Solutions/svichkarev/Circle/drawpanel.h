@@ -19,19 +19,23 @@ public:
     static const int DEFAULT_HEIGHT = 500;
     static const int DEFAULT_WIDTH = 500;
 
-private:
-    Circle* pCircle;
-    QImage backBuffer;
+    static const QColor DEFAULT_COLOR;
+    static const uchar whiteColor = 255;
 
+private:
+    Circle * pCircle;
+    QImage * backBuffer;
+
+    int oldWidth;
+    int oldHeight;
 public:
     DrawPanel( int w, int h, QWidget *parent = 0 );
+    virtual ~DrawPanel();
 
-    virtual void drawPixel( int x, int y, const QColor& color );
     Circle* getCircle() const;
 
-protected: // TODO: почему protected?
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent (QResizeEvent* event );
+private:
+    void paintEvent( QPaintEvent * event );
 };
 
 #endif // DRAWPANEL_H
