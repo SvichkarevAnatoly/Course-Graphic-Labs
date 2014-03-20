@@ -1,61 +1,55 @@
+#include "circle.h"
+
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <QFile>
-#include <cmath>
-#include <QDebug> // TODO: зачем?
-#include "circle.h"
 
-Circle::Circle( int x, int y, int r, QObject *parent ) :
-    QObject(parent)
-{
-    // TODO : harcode =/
-    this->w = 100;
-    this->h = 100;
-    this->setX(x);
-    this->setY(y);
-    this->setR(r);
+#include <cmath>
+#include <QDebug>  //TODO: убрать
+
+Circle::Circle( int x, int y, int r){
+    setX(x);
+    setY(y);
+    setR(r);
 }
 
+// устанавливаем новые значения вызываем сигнал изменения
 void Circle::setX( int x ){
-    qDebug()  << x;
-    this->centreX = x;
+    qDebug()  << x; //TODO: убрать
+    centreX = x;
     emit changeX( x );
 }
 
 void Circle::setY( int y ){
-    qDebug() << y;
-    this->centreY = y;
+    qDebug() << y; //TODO: убрать
+    centreY = y;
     emit changeY( y );
 }
 
 void Circle::setR( int r ){
-    qDebug()   << r;
-    this->radius = r;
+    qDebug()   << r; //TODO: убрать
+    radius = r;
     emit changeR( r );
 }
 
-int Circle::getW() const{
-    return w;
-}
+void Circle::draw(  ){
 
-int Circle::getH() const{
-    return h;
 }
 
 // Главный метод всей лабы - отрисовка круга
-void Circle::draw( Canvas *c, const QColor& color ){
-    if( !c ){ // TODO: надо кидать исключение
+void Circle::draw( DrawPanel *canvas, const QColor& color ){
+    if( !canvas ){ // TODO: надо кидать исключение
         return;
     }
 
     // TODO: why all with this?
     // TODO: по идее это константы, их не обязательно каждый раз высчитывать
-    double X0 = this->centreX +c->getWidth()*1.0/2;
-    double Y0 = this->centreY +c->getHeight()*1.0/2;
-    int r = this->radius;
+    double X0 = centreX + canvas->width() *1.0/2;
+    double Y0 = centreY + canvas->height()*1.0/2;
+    int r = radius;
 
     double leftY = Y0 - r > 0 ? Y0 - r : 0;
-    double rightY= Y0 + r < c->getHeight() ? Y0 + r : c->getHeight() - 1;
+    double rightY= Y0 + r < canvas->height() ? Y0 + r : canvas->height() - 1;
 
     double sq_r = pow(r,2); // FIXME: pow
 
@@ -64,10 +58,10 @@ void Circle::draw( Canvas *c, const QColor& color ){
         double xa = ( -1 * sq  + X0 );
         double xb = (      sq  + X0 );
         if (xa < 0) xa = 0;
-        if (xb >= c->getWidth()) xb = c->getWidth()-1;
+        if (xb >= canvas->width()) xb = canvas->width()-1;
 
         for (int x = round(xa); x <= xb; ++x) { // FIXME: double -> int
-            c->drawPixel( x, y , color );
+            canvas->drawPixel( x, y , color );
         }
     }
 }
@@ -111,12 +105,14 @@ void Circle::read(const std::string &fileName)
                     /* Only in console mode */
                     if ("Width" == xml.attributes().value("key").toString())
                     {
-                       this->w = (xml.readElementText().toInt());
+                        // FIXME: надо этот момент переделать
+                       //this->w = (xml.readElementText().toInt());
                        continue;
                     }
                     if ("Height" == xml.attributes().value("key").toString())
                     {
-                       this->h = (xml.readElementText().toInt());
+                        // FIXME: надо этот момент переделать
+                       //this->h = (xml.readElementText().toInt());
                        continue;
                     }
                  }
@@ -128,8 +124,12 @@ void Circle::read(const std::string &fileName)
          }
      }
      file->close();
-     delete file;
+     delete file; // TODO: почему удаляет
 }
+
+// TODO: класс круга сам не должен открывать файл,
+// по идее он должен спрашивать у класса утилиты для сохранения и загрузки
+// нужные ему параметры, а тот должен искать в файле и возвращать...
 
 // TODO: разобраться
 // метод сохранения в файл круга

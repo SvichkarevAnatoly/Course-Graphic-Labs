@@ -1,38 +1,43 @@
 #ifndef CIRCLE_H
 #define CIRCLE_H
 
-#include "canvas.h"
+#include "idrawable.h"
+#include "drawpanel.h"
+
 #include <QObject>
 
-class Circle : public QObject
-{
+class DrawPanel;
+
+class Circle : public QObject, public iDrawable{
+public:
+    static const int DEFAULT_CENTER_X = 0;
+    static const int DEFAULT_CENTER_Y = 0;
+    static const int DEFAULT_RADIUS   = 20;
+
+private:
     Q_OBJECT
     int centreX;
     int centreY;
     int radius;
 
-    // TODO: почему мы храним параметры холста в круге
-    int w;
-    int h;
 public:
-    explicit Circle( int x, int y, int r, QObject *parent = 0 );
-    void draw( Canvas* pBackBuffer, const QColor& color );
+    Circle( int x, int y, int r );
+
+    virtual void draw();
+
+    void draw( DrawPanel* pBackBuffer, const QColor& color );
+
     void read( const std::string& fileName );
     void save( const std::string& fileName );
-
-    // зачем эти методы?
-    int getW() const;
-    int getH() const;
-
 signals:
-    void changeX(int x);
-    void changeY(int y);
-    void changeR(int r);
+    void changeX( int x );
+    void changeY( int y );
+    void changeR( int r );
 
 public slots:
-    void setX(int x);
-    void setY(int y);
-    void setR(int r);
+    void setX( int x );
+    void setY( int y );
+    void setR( int r );
 };
 
 #endif // CIRCLE_H

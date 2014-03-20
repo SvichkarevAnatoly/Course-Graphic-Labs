@@ -2,31 +2,36 @@
 #define DRAWPANEL_H
 
 #include "circle.h"
-#include "canvas.h"
+
+#include <list>
+
 #include <QObject>
 #include <QWidget>
 #include <QImage>
 #include <QPainter>
 #include <QPaintEvent>
 
-class DrawPanel : public QWidget, Canvas{
-    Q_OBJECT
+class Circle;
+
+class DrawPanel : public QWidget{
+public:
+    // стандартные размеры окна области рисования
+    static const int DEFAULT_HEIGHT = 500;
+    static const int DEFAULT_WIDTH = 500;
+
+private:
     Circle* pCircle;
     QImage backBuffer;
+
 public:
-    // TODO: зачем здесь explicit?
-    explicit DrawPanel( int w, int h, int r, QWidget *parent = 0 );
-    void drawPixel( int x, int y, const QColor& color );
+    DrawPanel( int w, int h, QWidget *parent = 0 );
+
+    virtual void drawPixel( int x, int y, const QColor& color );
     Circle* getCircle() const;
-protected:
+
+protected: // TODO: почему protected?
     void paintEvent(QPaintEvent *event);
     void resizeEvent (QResizeEvent* event );
-    virtual int getWidth() const;
-    virtual int getHeight() const;
-
-signals:
-
-public slots:
 };
 
 #endif // DRAWPANEL_H

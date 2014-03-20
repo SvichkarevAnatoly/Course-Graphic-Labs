@@ -21,7 +21,7 @@ public:
     // TODO: QWidget
     SizeController( QWidget*,const std::string& label, int min, int max, int val );
     int getValue() const;
-protected slots:
+protected slots: // TODO: почему protected?
     void setValue( int v );
 signals:
     void valueChanged( int newValue );

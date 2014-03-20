@@ -7,16 +7,15 @@ TARGET = Circle
 INCLUDEPATH += .
 
 # Input
-HEADERS += canvas.h \
+HEADERS += \
            circle.h \
            drawpanel.h \
-           field.h \
            mainwindow.h \
-           sizecontroller.h
-SOURCES += canvas.cpp \
+           sizecontroller.h \
+    idrawable.h
+SOURCES += \
            circle.cpp \
            drawpanel.cpp \
-           field.cpp \
            main.cpp \
            mainwindow.cpp \
            sizecontroller.cpp
