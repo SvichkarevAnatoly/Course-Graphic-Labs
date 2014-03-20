@@ -23,9 +23,7 @@ private:
 public:
     Circle( int x, int y, int r );
 
-    virtual void draw();
-
-    void draw( DrawPanel* pBackBuffer, const QColor& color );
+    void draw( QImage * backBuffer, const QColor & color );
 
     void read( const std::string& fileName );
     void save( const std::string& fileName );

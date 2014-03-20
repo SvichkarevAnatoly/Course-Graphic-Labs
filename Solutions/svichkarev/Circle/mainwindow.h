@@ -8,7 +8,6 @@
 
 class MainWindow : public QMainWindow{
     Q_OBJECT
-    // TODO: можно сделать ссылкой, память не надо будет освобождать
     DrawPanel * drawPanel;
 public:
     // если не указываем, то нет родительского виджета

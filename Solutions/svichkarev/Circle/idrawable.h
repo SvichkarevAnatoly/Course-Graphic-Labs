@@ -1,12 +1,13 @@
 #ifndef INTERFACE_DRAWABLE_H
 #define INTERFACE_DRAWABLE_H
 
+#include <QColor>
+
+class DrawPanel;
+
 class iDrawable{
 public:
-    // TODO: понять, что не так
-    //virtual ~iDrawable();
-
-    virtual void draw() = 0;
+    virtual void draw( QImage * backBuffer, const QColor& color ) = 0;
 };
 
 #endif // INTERFACE_DRAWABLE_H
