@@ -11,6 +11,8 @@
 #include <QPainter>
 #include <QPaintEvent>
 
+#include <vector>
+
 class Circle;
 
 class DrawPanel : public QWidget{
@@ -25,6 +27,7 @@ public:
 private:
     Circle * pCircle;
     QImage * backBuffer;
+    std::vector< QPoint > pointsArr;
 
     int oldWidth;
     int oldHeight;
@@ -36,6 +39,7 @@ public:
 
 private:
     void paintEvent( QPaintEvent * event );
+    void mousePressEvent(QMouseEvent *);
 };
 
 #endif // DRAWPANEL_H

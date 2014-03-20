@@ -3,7 +3,7 @@
 ######################################################################
 QT       += core gui widgets
 TEMPLATE = app
-TARGET = Circle
+TARGET = Polygon
 INCLUDEPATH += .
 
 # Input
@@ -12,7 +12,7 @@ HEADERS += \
            drawpanel.h \
            mainwindow.h \
            sizecontroller.h \
-    idrawable.h
+           idrawable.h
 SOURCES += \
            circle.cpp \
            drawpanel.cpp \

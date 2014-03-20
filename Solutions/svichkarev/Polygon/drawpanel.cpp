@@ -28,7 +28,7 @@ DrawPanel::~DrawPanel(){
 // вызывается в repaint()
 void DrawPanel::paintEvent( QPaintEvent * ){
     QPainter painter( this );
-    // если изменились размеры - пересоздать
+    /*// если изменились размеры - пересоздать
     if( !((oldHeight == height()) &&
             (oldWidth == width())) ){
 
@@ -44,6 +44,30 @@ void DrawPanel::paintEvent( QPaintEvent * ){
     }
 
     painter.drawImage( 0, 0, *backBuffer );
+    */
+    painter.setPen(Qt::green);
+    if( pointsArr.size() >= 2 ){
+        for(std::vector<QPoint>::size_type i = 0; i != pointsArr.size()-1; i++) {
+            painter.drawLine( pointsArr[i], pointsArr[i+1] );
+        }
+    }
+}
+
+// обработка нажатия на панеле
+//вся суть лабы в этом методе
+void DrawPanel::mousePressEvent(QMouseEvent * event){
+    if( event->button() == Qt::LeftButton ){
+        // добавляем новую точку
+        //pCircle->setR(100);
+        pointsArr.push_back( event->pos() );
+        event->accept();
+        update();
+    }else if( event->button() == Qt::RightButton ){
+        // удаляем последнюю точку
+
+    }
+
+
 }
 
 // для доставания из панели
