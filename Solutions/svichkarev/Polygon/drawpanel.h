@@ -7,11 +7,9 @@
 
 #include <QObject>
 #include <QWidget>
-#include <QImage>
 #include <QPainter>
 #include <QPaintEvent>
-
-#include <vector>
+#include <QList>
 
 class Circle;
 
@@ -27,7 +25,7 @@ public:
 private:
     Circle * pCircle;
     QImage * backBuffer;
-    std::vector< QPoint > pointsArr;
+    QList< QPoint > pointsList;
 
     int oldWidth;
     int oldHeight;
@@ -39,7 +37,7 @@ public:
 
 private:
     void paintEvent( QPaintEvent * event );
-    void mousePressEvent(QMouseEvent *);
+    void mousePressEvent( QMouseEvent * event);
 };
 
 #endif // DRAWPANEL_H

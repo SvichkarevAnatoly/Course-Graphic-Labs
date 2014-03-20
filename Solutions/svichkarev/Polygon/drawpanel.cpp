@@ -45,10 +45,18 @@ void DrawPanel::paintEvent( QPaintEvent * ){
 
     painter.drawImage( 0, 0, *backBuffer );
     */
-    painter.setPen(Qt::green);
-    if( pointsArr.size() >= 2 ){
-        for(std::vector<QPoint>::size_type i = 0; i != pointsArr.size()-1; i++) {
-            painter.drawLine( pointsArr[i], pointsArr[i+1] );
+    if( pointsList.size() >= 2 ){
+        QPen pen(Qt::green, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        painter.setPen( pen );
+
+        QList<QPoint>::const_iterator it = pointsList.begin();
+        QPoint start = *it;
+        it++;
+        while(it != pointsList.end()) {
+            QPoint end = *it;
+            painter.drawLine( start, end );
+            start = end;
+            it++;
         }
     }
 }
@@ -58,13 +66,16 @@ void DrawPanel::paintEvent( QPaintEvent * ){
 void DrawPanel::mousePressEvent(QMouseEvent * event){
     if( event->button() == Qt::LeftButton ){
         // добавляем новую точку
-        //pCircle->setR(100);
-        pointsArr.push_back( event->pos() );
-        event->accept();
+        pointsList.append( event->pos() );
         update();
+        event->accept();
     }else if( event->button() == Qt::RightButton ){
         // удаляем последнюю точку
-
+        if( pointsList.size() > 0 ){
+            pointsList.removeLast();
+            update();
+            event->accept();
+        }
     }
 
 
