@@ -15,19 +15,19 @@ Circle::Circle( int x, int y, int r){
 
 // устанавливаем новые значения вызываем сигнал изменения
 void Circle::setX( int x ){
-    qDebug()  << x; //TODO: убрать
+    //qDebug()  << x; //TODO: убрать
     centreX = x;
     emit changeX( x );
 }
 
 void Circle::setY( int y ){
-    qDebug() << y; //TODO: убрать
+    //qDebug() << y; //TODO: убрать
     centreY = y;
     emit changeY( y );
 }
 
 void Circle::setR( int r ){
-    qDebug()   << r; //TODO: убрать
+    //qDebug()   << r; //TODO: убрать
     radius = r;
     emit changeR( r );
 }
@@ -39,6 +39,12 @@ void Circle::draw( QImage * backBuffer, const QColor& color ){
     }
 
     backBuffer->fill( Qt::white );
+
+    // если радиус нулевой - не нужно рисовать
+    if( radius == 0 ){
+        //qDebug() << "не печатал"; //TODO: убрать
+        return;
+    }
 
     int w = backBuffer->width();
     int h = backBuffer->height();

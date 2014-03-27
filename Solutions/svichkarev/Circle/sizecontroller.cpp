@@ -28,8 +28,8 @@ SizeController::SizeController( QWidget* p, const std::string & string, int min,
     // компоновка элементов
     layout.addWidget(&label, 0,0, Qt::AlignLeft);
     layout.addWidget(&spinEditor, 0,1, Qt::AlignRight);
-    layout.addWidget(&slider, 1,0, Qt::AlignLeft, 2); // TODO
-    layout.setMargin(20); // TODO:
+    layout.addWidget(&slider, 1,0, Qt::AlignLeft, 2);
+    layout.setMargin(20);
 
     setLayout( &layout );
 

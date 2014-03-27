@@ -25,8 +25,17 @@ public:
 
     void draw( QImage * backBuffer, const QColor & color );
 
-    void read( const std::string& fileName );
-    void save( const std::string& fileName );
+    // For fileWorker
+    int getX(){
+        return centreX;
+    }
+    int getY(){
+        return centreY;
+    }
+    int getR(){
+        return radius;
+    }
+
 signals:
     void changeX( int x );
     void changeY( int y );

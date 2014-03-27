@@ -11,7 +11,7 @@
 class SizeController : public QWidget{
     Q_OBJECT
 public:
-    static const int DEFAULT_MAX_VALUE = 1000;
+    static const int DEFAULT_MAX_VALUE = 10000;
 private:
     QGridLayout layout; // для расположения движков
     QLabel label; // надпись контрола

@@ -36,7 +36,7 @@ void DrawPanel::paintEvent( QPaintEvent * ){
         oldHeight = height();
         oldWidth = width();
         backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
-        qDebug()   << "reee"; //TODO: убрать
+        //qDebug()   << "redraw"; //TODO: убрать
     }
 
     if( pCircle ){
