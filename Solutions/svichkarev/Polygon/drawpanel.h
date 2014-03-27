@@ -1,9 +1,8 @@
 #ifndef DRAWPANEL_H
 #define DRAWPANEL_H
 
-#include <list>
+#include "polygon.h"
 
-#include <QObject>
 #include <QWidget>
 #include <QPainter>
 #include <QPaintEvent>
@@ -18,11 +17,11 @@ public:
     static const int DEFAULT_WIDTH = 500;
 
     static const QColor DEFAULT_COLOR;
-    static const uchar whiteColor = 255;
+    static const uchar whiteColor = 255; //TODO: Большие буквы
 
 private:
     QImage * backBuffer;
-    QList< QPoint > pointsList;
+    Polygon & polygon;
 
     int oldWidth;
     int oldHeight;

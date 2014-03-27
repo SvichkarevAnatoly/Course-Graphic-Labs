@@ -2,12 +2,14 @@
 #define INTERFACE_DRAWABLE_H
 
 #include <QColor>
+#include <QPainter> // TODO: убрать
 
 class DrawPanel;
 
 class iDrawable{
 public:
-    virtual void draw( QImage * backBuffer, const QColor& color ) = 0;
+    // TODO: вернуть
+    virtual void draw( QImage * backBuffer, const QColor& color, QPainter & painter ) = 0;
 };
 
 #endif // INTERFACE_DRAWABLE_H

@@ -5,15 +5,16 @@
 const QColor DrawPanel::DEFAULT_COLOR( 100, 200, 120 );
 
 DrawPanel::DrawPanel( int minW, int minH, QWidget *parent ) :
-    QWidget( parent ), oldWidth( width() ), oldHeight( height() )
+    QWidget( parent ), oldWidth( width() ), oldHeight( height() ),
+    polygon( *(new Polygon()) ) // TODO: точно ли так
 {
-    //pCircle = new Circle( Circle::DEFAULT_CENTER_X, Circle::DEFAULT_CENTER_Y, Circle::DEFAULT_RADIUS );
-
     // минимальные размеры устанавливаем
     setMinimumSize( minW, minH );
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+
     backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
 
+    // TODO:
     /*// устанавливаем обработчики на изменения, перерисовку qt вызовет
     QObject::connect( pCircle, SIGNAL( changeX(int) ), this, SLOT( repaint() ) );
     QObject::connect( pCircle, SIGNAL( changeY(int) ), this, SLOT( repaint() ) );
@@ -23,12 +24,14 @@ DrawPanel::DrawPanel( int minW, int minH, QWidget *parent ) :
 
 DrawPanel::~DrawPanel(){
     delete backBuffer;
+    delete &polygon;
 }
 
 // вызывается в repaint()
+//отвечает так же за перерисовку при изменении окна
 void DrawPanel::paintEvent( QPaintEvent * ){
     QPainter painter( this );
-    /*// если изменились размеры - пересоздать
+    // если изменились размеры - пересоздать
     if( !((oldHeight == height()) &&
             (oldWidth == width())) ){
 
@@ -36,47 +39,30 @@ void DrawPanel::paintEvent( QPaintEvent * ){
         oldHeight = height();
         oldWidth = width();
         backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
-        qDebug()   << "reee"; //TODO: убрать
+        qDebug()   << "recreate bg"; //TODO: убрать
     }
 
-    if( pCircle ){
-        pCircle->draw( backBuffer, DEFAULT_COLOR );
-    }
-
-    painter.drawImage( 0, 0, *backBuffer );
-    */
-    if( pointsList.size() >= 2 ){
-        QPen pen(Qt::green, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        painter.setPen( pen );
-
-        QList<QPoint>::const_iterator it = pointsList.begin();
-        QPoint start = *it;
-        it++;
-        while(it != pointsList.end()) {
-            QPoint end = *it;
-            painter.drawLine( start, end );
-            start = end;
-            it++;
-        }
-    }
+    polygon.draw( backBuffer, DEFAULT_COLOR, painter );
+    // TODO: поменять
+    //painter.drawImage( 0, 0, *backBuffer );
 }
 
 // обработка нажатия на панеле
-//вся суть лабы в этом методе
+//всё действо через этот метод
 void DrawPanel::mousePressEvent(QMouseEvent * event){
+    static QPoint * curPoint;
+
     if( event->button() == Qt::LeftButton ){
+        // преобразуем координаты в системе центра экрана
+        curPoint = new QPoint( event->pos().x() - oldWidth/2, event->pos().y() - oldHeight/2 );
         // добавляем новую точку
-        pointsList.append( event->pos() );
+        polygon.append( *curPoint );
         update();
         event->accept();
     }else if( event->button() == Qt::RightButton ){
         // удаляем последнюю точку
-        if( pointsList.size() > 0 ){
-            pointsList.removeLast();
-            update();
-            event->accept();
-        }
+        polygon.removeLast();
+        update();
+        event->accept();
     }
-
-
 }

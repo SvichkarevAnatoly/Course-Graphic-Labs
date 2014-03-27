@@ -41,7 +41,7 @@ MainWindow::MainWindow( QWidget * parent ) :
 
     // добавляем меню и заголовок изменяем
     setMenuBar( menuBar );
-    setWindowTitle( tr("Circle") );
+    setWindowTitle( tr("Polygon") );
 }
 
 void MainWindow::openListener(){
