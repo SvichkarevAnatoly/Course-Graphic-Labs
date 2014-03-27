@@ -2,6 +2,8 @@
 
 #include <QPen>
 
+#include <QDebug> // TODO: убрать
+
 Polygon::Polygon(){
 }
 
@@ -77,12 +79,34 @@ void Polygon::draw( QImage * backBuffer, const QColor & color, QPainter & painte
     }
 }
 
-void Polygon::append( const QPoint &newPoint ){
+void Polygon::append( QPoint &newPoint ){
     pointsList.append( newPoint );
 }
 
 void Polygon::removeLast(){
     if( pointsList.size() > 0 ){
         pointsList.removeLast();
+    }
+}
+
+int Polygon::getNumberPoints() const{
+    return pointsList.size();
+}
+
+const QPoint & Polygon::getFirstPointCurrentPolygon() const{
+    if( pointsList.empty() ){
+        throw 77; //TODO: кинуть исключение
+    }
+    return pointsList.first();
+}
+
+void Polygon::closePolygon(){
+    // TODO: нужна ли проверка
+    // TODO: нужно ли добавлять новую точку
+    // если рядом, то замкнуть
+    if( (pointsList.size() > 2) ){
+        pointsList.append( pointsList.first() );
+        qDebug() << "Close points";
+
     }
 }

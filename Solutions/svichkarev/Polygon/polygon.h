@@ -14,14 +14,20 @@ public:
     virtual void draw( QImage * backBuffer, const QColor & color, QPainter & painter );
 
     // добавление новой точки отрезка
-    void append( const QPoint & newPoint );
+    void append( QPoint & newPoint );
+    // замыкание текущего многоугольника
+    void closePolygon();
     // удаление последней точки отрезка
     void removeLast();
+
+    // возвращает число точек
+    int getNumberPoints() const;
+    // возвращает первую точку будущего многоугольника
+    const QPoint & getFirstPointCurrentPolygon() const;
 
 private:
     // список точек
     QList< QPoint > pointsList;
-
 };
 
 #endif // POLYGON_H
