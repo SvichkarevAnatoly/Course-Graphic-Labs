@@ -12,10 +12,12 @@ HEADERS += \
            drawpanel.h \
            mainwindow.h \
            sizecontroller.h \
-           idrawable.h
+           idrawable.h \
+           fileWorker.h
 SOURCES += \
            circle.cpp \
            drawpanel.cpp \
            main.cpp \
            mainwindow.cpp \
-           sizecontroller.cpp
+           sizecontroller.cpp \
+           fileWorker.cpp
