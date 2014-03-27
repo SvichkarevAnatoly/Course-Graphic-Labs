@@ -1,4 +1,4 @@
-#include "circle.h"
+#include "polygon.h"
 #include "mainwindow.h"
 
 #include "fileWorker.h"
@@ -11,6 +11,7 @@
 
 int main( int argc, char** argv ){
     if( argc > 1 ){
+        /*
         QCoreApplication app(argc, argv);
         QTextStream out(stdout);
 
@@ -29,6 +30,7 @@ int main( int argc, char** argv ){
         }
 
         app.exit();
+        */
     } else {
         QApplication app(argc, argv);
         MainWindow window;

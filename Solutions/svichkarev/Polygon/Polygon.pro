@@ -8,16 +8,16 @@ INCLUDEPATH += .
 
 # Input
 HEADERS += \
-           circle.h \
            drawpanel.h \
            mainwindow.h \
            sizecontroller.h \
            idrawable.h \
-           fileWorker.h
+           fileWorker.h \
+    polygon.h
 SOURCES += \
-           circle.cpp \
            drawpanel.cpp \
            main.cpp \
            mainwindow.cpp \
            sizecontroller.cpp \
-           fileWorker.cpp
+           fileWorker.cpp \
+    polygon.cpp

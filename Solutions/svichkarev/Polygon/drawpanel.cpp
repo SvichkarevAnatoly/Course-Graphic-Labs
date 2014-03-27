@@ -7,21 +7,21 @@ const QColor DrawPanel::DEFAULT_COLOR( 100, 200, 120 );
 DrawPanel::DrawPanel( int minW, int minH, QWidget *parent ) :
     QWidget( parent ), oldWidth( width() ), oldHeight( height() )
 {
-    pCircle = new Circle( Circle::DEFAULT_CENTER_X, Circle::DEFAULT_CENTER_Y, Circle::DEFAULT_RADIUS );
+    //pCircle = new Circle( Circle::DEFAULT_CENTER_X, Circle::DEFAULT_CENTER_Y, Circle::DEFAULT_RADIUS );
 
     // минимальные размеры устанавливаем
     setMinimumSize( minW, minH );
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
     backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
 
-    // устанавливаем обработчики на изменения, перерисовку qt вызовет
+    /*// устанавливаем обработчики на изменения, перерисовку qt вызовет
     QObject::connect( pCircle, SIGNAL( changeX(int) ), this, SLOT( repaint() ) );
     QObject::connect( pCircle, SIGNAL( changeY(int) ), this, SLOT( repaint() ) );
     QObject::connect( pCircle, SIGNAL( changeR(int) ), this, SLOT( repaint() ) );
+    */
 }
 
 DrawPanel::~DrawPanel(){
-    delete pCircle;
     delete backBuffer;
 }
 
@@ -79,9 +79,4 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
     }
 
 
-}
-
-// для доставания из панели
-Circle* DrawPanel::getCircle() const {
-    return pCircle;
 }

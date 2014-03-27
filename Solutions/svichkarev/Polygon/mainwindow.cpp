@@ -16,22 +16,7 @@ MainWindow::MainWindow( QWidget * parent ) :
     QVBoxLayout* panelLayout = new QVBoxLayout( drawPanelBox );
 
     drawPanel = new DrawPanel( DrawPanel::DEFAULT_WIDTH, DrawPanel::DEFAULT_HEIGHT, drawPanelBox );
-
     panelLayout->addWidget( drawPanel );
-
-    // создание группы для контролов
-    QGroupBox* controllers = new QGroupBox( tr("Controllers") );
-    QVBoxLayout* cLayout = new QVBoxLayout( controllers );
-
-    SizeController* xC = new SizeController( this, "Position X", -SizeController::DEFAULT_MAX_VALUE, SizeController::DEFAULT_MAX_VALUE, Circle::DEFAULT_CENTER_X);
-    SizeController* yC = new SizeController( this, "Position Y", -SizeController::DEFAULT_MAX_VALUE, SizeController::DEFAULT_MAX_VALUE, Circle::DEFAULT_CENTER_Y);
-    SizeController* rC = new SizeController( this, "Radius", 0, SizeController::DEFAULT_MAX_VALUE, Circle::DEFAULT_RADIUS);
-
-    cLayout->addWidget( xC );
-    cLayout->addWidget( yC );
-    cLayout->addWidget( rC );
-    // фиксируем растяжение по горизонтали контролов
-    controllers->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
 
     // создаём виджет контейнер, который вложим в наш главный виджет QMainWindow
     QWidget * container = new QWidget;
@@ -39,30 +24,9 @@ MainWindow::MainWindow( QWidget * parent ) :
     //и помещаем в контейнер
     QHBoxLayout * mainLayout = new QHBoxLayout( container );
     mainLayout->addWidget( drawPanelBox );
-    mainLayout->addWidget( controllers );
 
     // устанавливаем начинку главному виджету
     setCentralWidget(container);
-
-    // изменили значения контролов, нужно вызвать отрисовку и установить новые значения параметров
-    QObject::connect( xC, SIGNAL( valueChanged(int) ), drawPanel->getCircle(), SLOT( setX(int) ));
-    QObject::connect( yC, SIGNAL( valueChanged(int) ), drawPanel->getCircle(), SLOT( setY(int) ));
-    QObject::connect( rC, SIGNAL( valueChanged(int) ), drawPanel->getCircle(), SLOT( setR(int) ));
-
-    // для обратной связи при считывании из файла настроек, чтобы бегунки настроить
-    QObject::connect(drawPanel->getCircle(), SIGNAL(changeX(int)), xC, SLOT(setValue(int)));
-    QObject::connect(drawPanel->getCircle(), SIGNAL(changeY(int)), yC, SLOT(setValue(int)));
-    QObject::connect(drawPanel->getCircle(), SIGNAL(changeR(int)), rC, SLOT(setValue(int)));
-
-    /*По идее архитектура должна быть построена так:
-        Вызывается сигнал, мы у области рисования вызываем слот перерисовки.
-        В области рисования у нас есть разные объекты для отрисовки.
-        В перерисовки мы независимо у каждого вызываем функцию перерисовки.
-        Картинка отрисовывается как сумма отображений каждого объекта
-        Остальные контролы сразу меняют своё состояние, не дожидаясь отрисовки,
-        потому что отрисовка может занимать значительное время, а параметры должны быть
-        действительными на данный момент
-    */
 
     // Создание меню и привязываем действия
     QMenuBar *menuBar = new QMenuBar( this );
@@ -91,10 +55,11 @@ void MainWindow::openListener(){
         return;
     }
 
-    try {
+    // TODO:
+    /*try {
         fileWorker::readFileSettings( fileNames.at(0).toStdString(), *(drawPanel->getCircle()) );
     } catch(...) {
-    }
+    }*/
 }
 
 void MainWindow::saveListener(){
@@ -106,5 +71,6 @@ void MainWindow::saveListener(){
                                                     QDir::currentPath(),
                                                     tr( "Documents (*.xml)" ) );
 
-    fileWorker::writeFileSettings( filename.toStdString(), *(drawPanel->getCircle()) );
+    // TODO:
+    //fileWorker::writeFileSettings( filename.toStdString(), *(drawPanel->getCircle()) );
 }

@@ -1,8 +1,6 @@
 #ifndef DRAWPANEL_H
 #define DRAWPANEL_H
 
-#include "circle.h"
-
 #include <list>
 
 #include <QObject>
@@ -23,7 +21,6 @@ public:
     static const uchar whiteColor = 255;
 
 private:
-    Circle * pCircle;
     QImage * backBuffer;
     QList< QPoint > pointsList;
 
@@ -32,8 +29,6 @@ private:
 public:
     DrawPanel( int w, int h, QWidget *parent = 0 );
     virtual ~DrawPanel();
-
-    Circle* getCircle() const;
 
 private:
     void paintEvent( QPaintEvent * event );

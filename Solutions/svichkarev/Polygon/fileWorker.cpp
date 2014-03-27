@@ -4,8 +4,9 @@
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+#include <QFile>
 
-void fileWorker::readFileSettings( const std::string &fileName, Circle &circle ){
+void fileWorker::readFileSettings( const std::string &fileName, Polygon &polygon ){
     QFile *file = new QFile( fileName.c_str() );
     if ( !file->open(QIODevice::ReadOnly | QIODevice::Text) ){
         return;
@@ -25,16 +26,19 @@ void fileWorker::readFileSettings( const std::string &fileName, Circle &circle )
             if( xml.name() == "entry" ){
                 if( xml.attributes().hasAttribute("key") ){
                     if( "PosX" == xml.attributes().value("key").toString() ){
-                        circle.setX( xml.readElementText().toInt() );
+                        // TODO:
+                        //circle.setX( xml.readElementText().toInt() );
                         continue;
                     }
 
                     if( "PosY" == xml.attributes().value("key").toString() ){
-                        circle.setY(xml.readElementText().toInt());
+                        // TODO:
+                        //circle.setY(xml.readElementText().toInt());
                         continue;
                     }
                     if( "R" == xml.attributes().value("key").toString() ){
-                        circle.setR(xml.readElementText().toInt());
+                        // TODO:
+                        //circle.setR(xml.readElementText().toInt());
                         continue;
                     }
                 }
@@ -50,7 +54,7 @@ void fileWorker::readFileSettings( const std::string &fileName, Circle &circle )
     delete file;
 }
 
-void fileWorker::writeFileSettings( const std::string &fileName, Circle &circle ){
+void fileWorker::writeFileSettings( const std::string &fileName, Polygon &polygon ){
     qDebug ( "save" );
     QFile *file = new QFile( fileName.c_str() );
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text)){
@@ -72,17 +76,20 @@ void fileWorker::writeFileSettings( const std::string &fileName, Circle &circle 
 
     xmlWriter.writeStartElement("entry");
     xmlWriter.writeAttribute("key","PosX");
-    xmlWriter.writeCharacters( QString::number( circle.getX() ) );
+    //TODO:
+    //xmlWriter.writeCharacters( QString::number( circle.getX() ) );
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("entry");
     xmlWriter.writeAttribute("key","PosY");
-    xmlWriter.writeCharacters( QString::number( circle.getY() ) );
+    //TODO:
+    //xmlWriter.writeCharacters( QString::number( circle.getY() ) );
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("entry");
     xmlWriter.writeAttribute("key","R");
-    xmlWriter.writeCharacters( QString::number( circle.getR() ) );
+    //TODO:
+    //xmlWriter.writeCharacters( QString::number( circle.getR() ) );
     xmlWriter.writeEndElement();
 
     xmlWriter.writeEndElement();
@@ -92,9 +99,10 @@ void fileWorker::writeFileSettings( const std::string &fileName, Circle &circle 
     delete file;
 }
 
-void fileWorker::saveImage( const std::string &fileName, Circle &circle, int PanelWidth, int PanelHeight, const QColor &color ){
+void fileWorker::saveImage( const std::string &fileName, Polygon &polygon, int PanelWidth, int PanelHeight, const QColor &color ){
     QImage image( PanelWidth, PanelHeight, QImage::Format_RGB888 );
-    circle.draw( &image, color );
+    //TODO:
+    //circle.draw( &image, color );
 
     try{
         image.save( QString( fileName.c_str() ), "png" );
