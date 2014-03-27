@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "sizecontroller.h"
+#include "fileWorker.h"
 
 #include <QGroupBox>
 #include <QMenu>
@@ -48,6 +49,11 @@ MainWindow::MainWindow( QWidget * parent ) :
     QObject::connect( yC, SIGNAL( valueChanged(int) ), drawPanel->getCircle(), SLOT( setY(int) ));
     QObject::connect( rC, SIGNAL( valueChanged(int) ), drawPanel->getCircle(), SLOT( setR(int) ));
 
+    // для обратной связи при считывании из файла настроек, чтобы бегунки настроить
+    QObject::connect(drawPanel->getCircle(), SIGNAL(changeX(int)), xC, SLOT(setValue(int)));
+    QObject::connect(drawPanel->getCircle(), SIGNAL(changeY(int)), yC, SLOT(setValue(int)));
+    QObject::connect(drawPanel->getCircle(), SIGNAL(changeR(int)), rC, SLOT(setValue(int)));
+
     /*По идее архитектура должна быть построена так:
         Вызывается сигнал, мы у области рисования вызываем слот перерисовки.
         В области рисования у нас есть разные объекты для отрисовки.
@@ -64,19 +70,41 @@ MainWindow::MainWindow( QWidget * parent ) :
     QAction* openAction = menu->addAction( tr("Open") );
     QAction* saveAction = menu->addAction( tr("Save") );
 
-    QObject::connect( openAction, SIGNAL( triggered() ), this, SLOT( openClicked() ));
-    QObject::connect( saveAction, SIGNAL( triggered() ), this, SLOT( saveClicked() ));
+    QObject::connect( openAction, SIGNAL( triggered() ), this, SLOT( openListener() ));
+    QObject::connect( saveAction, SIGNAL( triggered() ), this, SLOT( saveListener() ));
 
     menuBar->addMenu( menu );
 
     // добавляем меню и заголовок изменяем
-    this->setMenuBar( menuBar );
-    this->setWindowTitle( tr("Circle") );
+    setMenuBar( menuBar );
+    setWindowTitle( tr("Circle") );
 }
 
+void MainWindow::openListener(){
+    // open dialog
+    QFileDialog * fileDialog = new QFileDialog( this );
+    fileDialog->setFileMode( QFileDialog::ExistingFile );
+    QStringList fileNames;
+    if( fileDialog->exec() )
+        fileNames = fileDialog->selectedFiles();
+    else {
+        return;
+    }
 
-// TODO: ещё непонятно как это работает
-void MainWindow::openClicked(){}
+    try {
+        fileWorker::readFileSettings( fileNames.at(0).toStdString(), *(drawPanel->getCircle()) );
+    } catch(...) {
+    }
+}
 
-// TODO: ещё непонятно как это работает
-void MainWindow::saveClicked(){}
+void MainWindow::saveListener(){
+    QFileDialog* fileDialog = new QFileDialog( this );
+    fileDialog->setFileMode( QFileDialog::Directory );
+    fileDialog->setNameFilter( tr( "*.xml" ) );
+    QString filename = QFileDialog::getSaveFileName(fileDialog,
+                                                    tr( "Save settings" ),
+                                                    QDir::currentPath(),
+                                                    tr( "Documents (*.xml)" ) );
+
+    fileWorker::writeFileSettings( filename.toStdString(), *(drawPanel->getCircle()) );
+}

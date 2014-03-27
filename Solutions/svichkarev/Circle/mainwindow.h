@@ -13,8 +13,8 @@ public:
     // если не указываем, то нет родительского виджета
     MainWindow( QWidget *parent = 0 );
 public slots:
-    void openClicked();
-    void saveClicked();
+    void openListener();
+    void saveListener();
 };
 
 #endif // MAINWINDOW_H
