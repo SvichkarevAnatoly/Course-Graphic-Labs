@@ -13,11 +13,13 @@ HEADERS += \
            sizecontroller.h \
            idrawable.h \
            fileWorker.h \
-    polygon.h
+    polygon.h \
+    edge.h
 SOURCES += \
            drawpanel.cpp \
            main.cpp \
            mainwindow.cpp \
            sizecontroller.cpp \
            fileWorker.cpp \
-    polygon.cpp
+    polygon.cpp \
+    edge.cpp

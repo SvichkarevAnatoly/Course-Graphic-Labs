@@ -38,7 +38,7 @@ DrawPanel::~DrawPanel(){
 // вызывается в repaint()
 //отвечает так же за перерисовку при изменении окна
 void DrawPanel::paintEvent( QPaintEvent * ){
-    QPainter painter( this );
+    QPainter painter(this);
     // если изменились размеры - пересоздать
     if( !((oldHeight == height()) &&
             (oldWidth == width())) ){
@@ -50,10 +50,12 @@ void DrawPanel::paintEvent( QPaintEvent * ){
         qDebug()   << "recreate bg"; //TODO: убрать
     }
 
+    painter.begin( backBuffer );
     // TODO: цвет
     polygon.draw( backBuffer, DEFAULT_CONTOUR_COLOR, painter );
     // TODO: поменять
-    //painter.drawImage( 0, 0, *backBuffer );
+    painter.drawImage( 0, 0, *backBuffer );
+    painter.end();
 }
 
 // обработка нажатия на панеле
@@ -66,6 +68,8 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
         if( flagNearClose ){
             // если можно замкнуть, то замыкаем
             polygon.closePolygon();
+            // сбрасываем флаг для нового многоугольника
+            flagNearClose = false;
         } else{
             polygon.append( curPoint );
         }
@@ -98,7 +102,7 @@ void DrawPanel::checkNearClose( const QPoint & checkPoint ){
         double trueLength = sqrt(pow(nearVec.x(), 2) + pow(nearVec.y(), 2));
         if( trueLength < CLOSE_DISTANCE ){ // внутри окрестности
             flagNearClose = true;
-            qDebug() << "Near"; //TODO
+            //qDebug() << "Near"; //TODO
         } else{
             flagNearClose = false;
         }
