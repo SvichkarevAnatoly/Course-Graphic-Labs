@@ -1,5 +1,7 @@
 #include "drawpanel.h"
 
+#include "mqpainter.h"
+
 #include <QDebug>  //TODO: убрать
 
 #include <QMainWindow>
@@ -38,7 +40,7 @@ DrawPanel::~DrawPanel(){
 // вызывается в repaint()
 //отвечает так же за перерисовку при изменении окна
 void DrawPanel::paintEvent( QPaintEvent * ){
-    QPainter painter(this);
+    MQPainter painter( backBuffer, Qt::blue );
     // если изменились размеры - пересоздать
     if( !((oldHeight == height()) &&
             (oldWidth == width())) ){
@@ -47,15 +49,22 @@ void DrawPanel::paintEvent( QPaintEvent * ){
         oldHeight = height();
         oldWidth = width();
         backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
+        painter.refreshImageBuffer( backBuffer );
         qDebug()   << "recreate bg"; //TODO: убрать
     }
 
-    painter.begin( backBuffer );
+    //painter.begin( backBuffer );
     // TODO: цвет
     polygon.draw( backBuffer, DEFAULT_CONTOUR_COLOR, painter );
     // TODO: поменять
-    painter.drawImage( 0, 0, *backBuffer );
-    painter.end();
+
+    painter.drawImage( this );
+
+    //QPainter pa(this);
+    //pa.drawImage( 0, 0, *backBuffer );
+
+    //painter.drawImage( 0, 0, *backBuffer );
+    //painter.end();
 }
 
 // обработка нажатия на панеле

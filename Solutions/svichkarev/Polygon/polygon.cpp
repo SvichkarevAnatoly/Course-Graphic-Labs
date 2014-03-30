@@ -13,7 +13,7 @@ Polygon::~Polygon(){
     delete xIntervals;
 }
 
-void Polygon::draw( QImage * backBuffer, const QColor & color, QPainter & painter ){
+void Polygon::draw( QImage * backBuffer, const QColor & color, MQPainter & painter ){
     if( !backBuffer ){ // TODO: надо кидать исключение
         return;
     }
@@ -22,8 +22,9 @@ void Polygon::draw( QImage * backBuffer, const QColor & color, QPainter & painte
     //painter.drawImage(0,0,*backBuffer);
 
     if( pointsList.size() >= 2 ){
-        QPen pen( Qt::red, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        painter.setPen( pen );
+        // TODO:
+        //QPen pen( Qt::red, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        //painter.setPen( pen );
 
         QList<QPoint>::const_iterator it = pointsList.begin();
         QPoint start = *it;

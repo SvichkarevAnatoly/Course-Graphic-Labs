@@ -4,6 +4,8 @@
 #include "idrawable.h"
 #include "edge.h"
 
+#include "mqpainter.h"
+
 #include <QImage>
 #include <QPoint>
 #include <QList>
@@ -14,7 +16,7 @@ public:
     Polygon();
     virtual ~Polygon();
 
-    virtual void draw( QImage * backBuffer, const QColor & color, QPainter & painter );
+    virtual void draw( QImage * backBuffer, const QColor & color, MQPainter & painter );
 
     // добавление новой точки отрезка
     void append( QPoint & newPoint );

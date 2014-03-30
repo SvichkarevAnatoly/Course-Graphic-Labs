@@ -14,7 +14,8 @@ HEADERS += \
            idrawable.h \
            fileWorker.h \
     polygon.h \
-    edge.h
+    edge.h \
+    mqpainter.h
 SOURCES += \
            drawpanel.cpp \
            main.cpp \
@@ -22,4 +23,5 @@ SOURCES += \
            sizecontroller.cpp \
            fileWorker.cpp \
     polygon.cpp \
-    edge.cpp
+    edge.cpp \
+    mqpainter.cpp
