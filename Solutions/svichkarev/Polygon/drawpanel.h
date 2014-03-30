@@ -1,14 +1,10 @@
 #ifndef DRAWPANEL_H
 #define DRAWPANEL_H
 
-#include "polygon.h"
+#include "setpolygons.h"
 
 #include <QWidget>
-#include <QPainter>
 #include <QPaintEvent>
-#include <QList>
-
-class Circle;
 
 class DrawPanel : public QWidget{
 public:
@@ -24,19 +20,21 @@ public:
     static const uchar WHITE_COLOR = 255; //TODO: Большие буквы
 
 private:
-    QImage * backBuffer;
-    Polygon & polygon;
+    MQPainter painter;
+    QImage * imgBuffer;
 
-    int oldWidth;
-    int oldHeight;
+    SetPolygons polygons;
 
-    // флаг близкого замыкания
-    bool flagNearClose;
+    // флаг примагничивания
+    bool flagMagnet;
 public:
-    DrawPanel( int w, int h, QWidget *parent = 0 );
+    DrawPanel( QWidget *parent );
     virtual ~DrawPanel();
 
 private:
+    /*Для нормальной работы при измении размеров окна нужно
+        переводить координаты в систему центра окна,
+        а при отрисовке обратно в систему окна*/
     virtual void paintEvent( QPaintEvent * event );
     virtual void mousePressEvent( QMouseEvent * event);
     virtual bool eventFilter(QObject *, QEvent *);

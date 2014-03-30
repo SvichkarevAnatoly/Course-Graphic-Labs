@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "sizecontroller.h"
 #include "fileWorker.h"
 
 #include <QGroupBox>
@@ -15,7 +14,7 @@ MainWindow::MainWindow( QWidget * parent ) :
     QGroupBox* drawPanelBox = new QGroupBox( tr("Draw Panel") );
     QVBoxLayout* panelLayout = new QVBoxLayout( drawPanelBox );
 
-    drawPanel = new DrawPanel( DrawPanel::DEFAULT_WIDTH, DrawPanel::DEFAULT_HEIGHT, drawPanelBox );
+    drawPanel = new DrawPanel( drawPanelBox );
     panelLayout->addWidget( drawPanel );
 
     // создаём виджет контейнер, который вложим в наш главный виджет QMainWindow

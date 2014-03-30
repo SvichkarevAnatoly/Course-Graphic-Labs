@@ -24,8 +24,8 @@ void MQPainter::drawPoint( int x, int y ){
 
 // Алгоритм из задания про круг
 void MQPainter::drawCircle( const QPoint & center, int radius ){
-    int x0 = center.x();
-    int y0 = center.y();
+    int x0 = center.x() + img->width() / 2;
+    int y0 = center.y() + img->height()/ 2;
 
     int x = 0;
     int y = radius;
@@ -56,10 +56,10 @@ void MQPainter::drawCircle( const QPoint & center, int radius ){
 
 // Алгоритм Брезенхэма с Вики
 void MQPainter::drawLine( const QPoint & p1, const QPoint & p2 ){
-    int x1 = p1.x();
-    int y1 = p1.y();
-    int x2 = p2.x();
-    int y2 = p2.y();
+    int x1 = p1.x() + img->width() / 2;
+    int y1 = p1.y() + img->height()/ 2;
+    int x2 = p2.x() + img->width() / 2;
+    int y2 = p2.y() + img->height()/ 2;
     const int deltaX = abs(x2 - x1);
     const int deltaY = abs(y2 - y1);
     const int signX = x1 < x2 ? 1 : -1;

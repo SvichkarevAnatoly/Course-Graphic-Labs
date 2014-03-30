@@ -6,8 +6,11 @@
 #include <QPoint>
 
 /*Класс-клон, где мы определяем запрещённые методы отрисовки примитивов*/
+
+
 class MQPainter{
 public:
+    MQPainter(){}
     MQPainter( QImage * im, const QColor & c = Qt::black );
 
     void drawPoint( int x, int y );

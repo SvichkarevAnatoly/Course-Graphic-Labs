@@ -10,18 +10,18 @@ INCLUDEPATH += .
 HEADERS += \
            drawpanel.h \
            mainwindow.h \
-           sizecontroller.h \
            idrawable.h \
            fileWorker.h \
     polygon.h \
-    edge.h \
-    mqpainter.h
+    mqpainter.h \
+    setpolygons.h \
+    edge.h
 SOURCES += \
            drawpanel.cpp \
            main.cpp \
            mainwindow.cpp \
-           sizecontroller.cpp \
            fileWorker.cpp \
     polygon.cpp \
-    edge.cpp \
-    mqpainter.cpp
+    mqpainter.cpp \
+    setpolygons.cpp \
+    edge.cpp

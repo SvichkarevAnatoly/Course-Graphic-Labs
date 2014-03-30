@@ -5,116 +5,114 @@
 #include <QDebug>  //TODO: убрать
 
 #include <QMainWindow>
-#include <qmath.h>
 
 const QColor DrawPanel::DEFAULT_CONTOUR_COLOR( 100, 200, 120 );
 const QColor DrawPanel::DEFAULT_INNER_COLOR( 100, 200, 120 ); //TODO: поменять
 
-DrawPanel::DrawPanel( int minW, int minH, QWidget *parent ) :
-    QWidget( parent ), oldWidth( width() ), oldHeight( height() ),
-    polygon( *(new Polygon()) ), flagNearClose( false ) // TODO: точно ли так
+DrawPanel::DrawPanel( QWidget *parent ) :
+    QWidget( parent ), flagMagnet( false )
 {
     // минимальные размеры устанавливаем
-    setMinimumSize( minW, minH );
+    setMinimumSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-    backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
+    imgBuffer = new QImage( DEFAULT_WIDTH, DEFAULT_HEIGHT, QImage::Format_RGB888 );
 
     // для отслеживания положения мыши
     setMouseTracking( true );
     installEventFilter( this );
-
-    // TODO:
-    /*// устанавливаем обработчики на изменения, перерисовку qt вызовет
-    QObject::connect( pCircle, SIGNAL( changeX(int) ), this, SLOT( repaint() ) );
-    QObject::connect( pCircle, SIGNAL( changeY(int) ), this, SLOT( repaint() ) );
-    QObject::connect( pCircle, SIGNAL( changeR(int) ), this, SLOT( repaint() ) );
-    */
 }
 
 DrawPanel::~DrawPanel(){
-    delete backBuffer;
-    delete &polygon;
+    delete imgBuffer;
 }
 
 // вызывается в repaint()
 //отвечает так же за перерисовку при изменении окна
 void DrawPanel::paintEvent( QPaintEvent * ){
-    MQPainter painter( backBuffer, Qt::blue );
-    // если изменились размеры - пересоздать
-    if( !((oldHeight == height()) &&
-            (oldWidth == width())) ){
+    // если изменились размеры - пересоздать буфер
+    if( (imgBuffer->height() != height()) ||
+        (imgBuffer->width()  != width()) ){
 
-        delete backBuffer;
-        oldHeight = height();
-        oldWidth = width();
-        backBuffer = new QImage( oldWidth, oldHeight, QImage::Format_RGB888 );
-        painter.refreshImageBuffer( backBuffer );
-        qDebug()   << "recreate bg"; //TODO: убрать
+        delete imgBuffer;
+        imgBuffer = new QImage( width(), height(), QImage::Format_RGB888 );
+        imgBuffer->fill( Qt::white );
+        qDebug() << "recreate bg"; //TODO: убрать
     }
 
-    //painter.begin( backBuffer );
     // TODO: цвет
-    polygon.draw( backBuffer, DEFAULT_CONTOUR_COLOR, painter );
-    // TODO: поменять
-    painter.drawCircle( QPoint( oldHeight/2, oldWidth/2 ), 20 );
+    polygons.draw( painter );
 
+    painter.refreshImageBuffer( imgBuffer );
     painter.drawImage( this );
 
-    //QPainter pa(this);
-    //pa.drawImage( 0, 0, *backBuffer );
-
-    //painter.drawImage( 0, 0, *backBuffer );
-    //painter.end();
+    imgBuffer->fill( Qt::white );
 }
 
 // обработка нажатия на панеле
 //всё действо через этот метод
 void DrawPanel::mousePressEvent(QMouseEvent * event){
     if( event->button() == Qt::LeftButton ){
-        // преобразуем координаты в системе центра экрана
-        QPoint curPoint( event->pos().x() - oldWidth/2, event->pos().y() - oldHeight/2 );
-        // добавляем новую точку
-        if( flagNearClose ){
-            // если можно замкнуть, то замыкаем
-            polygon.closePolygon();
-            // сбрасываем флаг для нового многоугольника
-            flagNearClose = false;
-        } else{
-            polygon.append( curPoint );
+        qDebug() << "mousePressEvent::LeftButton";
+        // преобразуем координаты в систему центра экрана
+        int xCoord = event->pos().x() - width() / 2;
+        int yCoord = event->pos().y() - height() / 2;
+        QPoint curPoint( xCoord, yCoord );
+
+        // проверяем нет ли самопересечения
+        if( ! polygons.isSelfIntersection( curPoint ) ){
+            // добавляем новую точку
+            // если работает магнит, то точку добавить в начальную
+            if( flagMagnet ){
+                curPoint = polygons.getFirstPointCurrentPolygon();
+                flagMagnet = false;
+            }
+            polygons.addPoint( curPoint );
+
         }
+        // иначе просто игнорим нажатие
+
         update();
         event->accept();
     }else if( event->button() == Qt::RightButton ){
+        qDebug() << "mousePressEvent::RightButton";
         // удаляем последнюю точку
-        polygon.removeLast();
+        polygons.removeLastPoint();
+
         update();
         event->accept();
     }
 }
 
-// для определения замыкания
+//TODO: после щелчка тоже бы надо перерисовать
+// для протягивания прямой за мышкой
 bool DrawPanel::eventFilter(QObject *, QEvent * event){
     if( event->type() == QEvent::MouseMove ){
+        //qDebug() << "MouseMove";
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>( event );
 
-        QPoint curPoint( mouseEvent->pos().x() - oldWidth/2, mouseEvent->pos().y() - oldHeight/2 );
-        checkNearClose( curPoint );
+        // проверяем, если ещё многоугольник не замкнут, то тянем прямую к мышке
+        //и рисуем кружок у первой точки многоугольника
+        if( ! polygons.isClose() ){ // пустой полигон считаем замкнутым
+            int xCoord = mouseEvent->pos().x() - width() / 2;
+            int yCoord = mouseEvent->pos().y() - height() / 2;
+            QPoint curPoint( xCoord, yCoord );
+
+            // если точка близка к начальной, то примагнитить её
+            if( polygons.isNearClose( curPoint ) ){
+                curPoint = polygons.getFirstPointCurrentPolygon();
+                flagMagnet = true;
+            } else{
+                // иначе нарисовать кружок рядом с начальной
+                painter.drawCircle( polygons.getFirstPointCurrentPolygon(), 20 );
+            }
+
+            // TODO: константа
+            // нарисовать отрезок до мышки
+            painter.drawLine( polygons.getLastPoint(), curPoint );
+            update(); //TODO: нужно ли
+        }
     }
 
     return false;
-}
-
-// TODO: усложнится структура
-void DrawPanel::checkNearClose( const QPoint & checkPoint ){
-    if( polygon.getNumberPoints() > 2 ){
-        const QPoint nearVec = polygon.getFirstPointCurrentPolygon() - checkPoint;
-        double trueLength = sqrt(pow(nearVec.x(), 2) + pow(nearVec.y(), 2));
-        if( trueLength < CLOSE_DISTANCE ){ // внутри окрестности
-            flagNearClose = true;
-            //qDebug() << "Near"; //TODO
-        } else{
-            flagNearClose = false;
-        }
-    }
 }
