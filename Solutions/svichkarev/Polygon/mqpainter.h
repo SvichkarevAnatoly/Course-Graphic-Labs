@@ -10,8 +10,10 @@ class MQPainter{
 public:
     MQPainter( QImage * im, const QColor & c = Qt::black );
 
-    void drawLine( const QPoint & p1, const QPoint & p2 );
     void drawPoint( int x, int y );
+
+    void drawLine( const QPoint & p1, const QPoint & p2 );
+    void drawCircle( const QPoint & center, int radius );
 
     inline void refreshImageBuffer( QImage * buf ){
         img = buf;

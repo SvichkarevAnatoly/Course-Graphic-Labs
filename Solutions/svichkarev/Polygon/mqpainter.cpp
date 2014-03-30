@@ -22,6 +22,38 @@ void MQPainter::drawPoint( int x, int y ){
     bytes[ y*bpl + x*3 + 2 ] = color.blue();
 }
 
+// Алгоритм из задания про круг
+void MQPainter::drawCircle( const QPoint & center, int radius ){
+    int x0 = center.x();
+    int y0 = center.y();
+
+    int x = 0;
+    int y = radius;
+    int delta = 1 - 2 * radius;
+    int error = 0;
+    while(y >= 0) {
+        drawPoint(x0 + x, y0 + y);
+        drawPoint(x0 + x, y0 - y);
+        drawPoint(x0 - x, y0 + y);
+        drawPoint(x0 - x, y0 - y);
+        error = 2 * (delta + y) - 1;
+        if(delta < 0 && error <= 0) {
+            ++x;
+            delta += 2 * x + 1;
+            continue;
+        }
+        error = 2 * (delta - x) - 1;
+        if(delta > 0 && error > 0) {
+            --y;
+            delta += 1 - 2 * y;
+            continue;
+        }
+        ++x;
+        delta += 2 * (x - y);
+        --y;
+    }
+}
+
 // Алгоритм Брезенхэма с Вики
 void MQPainter::drawLine( const QPoint & p1, const QPoint & p2 ){
     int x1 = p1.x();

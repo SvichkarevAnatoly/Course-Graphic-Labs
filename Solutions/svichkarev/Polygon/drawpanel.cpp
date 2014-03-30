@@ -57,6 +57,7 @@ void DrawPanel::paintEvent( QPaintEvent * ){
     // TODO: цвет
     polygon.draw( backBuffer, DEFAULT_CONTOUR_COLOR, painter );
     // TODO: поменять
+    painter.drawCircle( QPoint( oldHeight/2, oldWidth/2 ), 20 );
 
     painter.drawImage( this );
 
