@@ -15,6 +15,7 @@ public:
 
     QPoint getFirstPointCurrentPolygon();
     QPoint getLastPoint();
+    int getNumberEdgeCurrentPolygon();
 
     void addPoint( QPoint & curPoint ); //TODO:
     void removeLastPoint();

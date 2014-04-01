@@ -26,6 +26,8 @@ private:
     SetPolygons polygons;
 
     QPoint mouseCurPoint;
+    QColor colorCurEdge;
+
     // флаг примагничивания
     bool flagMagnet;
 public:

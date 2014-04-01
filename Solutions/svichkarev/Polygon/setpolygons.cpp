@@ -24,6 +24,10 @@ QPoint SetPolygons::getLastPoint(){
     return edges.last().p2;
 }
 
+int SetPolygons::getNumberEdgeCurrentPolygon(){
+    return (edges.size() - indexStartingNewPolygon.last());
+}
+
 void SetPolygons::addPoint( QPoint & curPoint ){
     if( isEmptyCurrentPolygon() ){
         // начальное ребро каждого нового полигона вырожденное
@@ -49,18 +53,18 @@ bool SetPolygons::isEmptyCurrentPolygon(){
     if( edges.empty() ){
         return true;
     }
-    qDebug() << edges.size() << indexStartingNewPolygon.last();
+    //qDebug() << edges.size() << indexStartingNewPolygon.last();
     return (edges.size() == indexStartingNewPolygon.last());
 }
 
 //TODO: при замыкании будет возникать пересечение, нужно что-то придумать
 bool SetPolygons::isSelfIntersection( QPoint & checkPoint ){
     // <=> сравнить текущий отрезок со всеми уже существующими
-    // текущий отрезок
-    if( edges.empty() ){
+    if( isEmptyCurrentPolygon() ){
         return false;
     }
 
+    // текущий отрезок
     QPoint lastPoint( getLastPoint() );
     Edge checkEdge( lastPoint, checkPoint );
 

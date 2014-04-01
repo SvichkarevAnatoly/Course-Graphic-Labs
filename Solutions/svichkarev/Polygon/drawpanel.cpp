@@ -49,10 +49,12 @@ void DrawPanel::paintEvent( QPaintEvent * ){
             // нарисовать кружок рядом с начальной точкой
             painter.drawCircle( polygons.getFirstPointCurrentPolygon(), 20 );
         }
+        painter.setColor( colorCurEdge );
         painter.drawLine( polygons.getLastPoint(), mouseCurPoint );
     }
 
     painter.refreshImageBuffer( imgBuffer );
+    painter.setColor( Qt::black );
     painter.drawImage( this );
 
     imgBuffer->fill( Qt::white );
@@ -76,8 +78,8 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
                 curPoint = polygons.getFirstPointCurrentPolygon();
                 flagMagnet = false;
             }
-            polygons.addPoint( curPoint );
 
+            polygons.addPoint( curPoint );
         }
         // иначе просто игнорим нажатие
 
@@ -107,13 +109,25 @@ bool DrawPanel::eventFilter(QObject *, QEvent * event){
         // проверяем, если ещё многоугольник не замкнут, то тянем прямую к мышке
         //и рисуем кружок у первой точки многоугольника
         if( ! polygons.isEmptyCurrentPolygon() ){ // пустой полигон считаем замкнутым
-            // если точка близка к начальной, то примагнитить её
-            if( polygons.isNearClose( mouseCurPoint ) ){
-                mouseCurPoint = polygons.getFirstPointCurrentPolygon();
-                flagMagnet = true;
-            } else{
-                flagMagnet = false;
+            // если число рёбер в полигоне больше 2, то можно попробовать замкнуть
+            if( polygons.getNumberEdgeCurrentPolygon() > 2 ){
+                // если точка близка к начальной, то примагнитить её
+                if( polygons.isNearClose( mouseCurPoint ) ){
+                    // TODO: проверить самопересечения при автозамыкании
+                    mouseCurPoint = polygons.getFirstPointCurrentPolygon();
+                    colorCurEdge = QColor( Qt::green );
+                    flagMagnet = true;
+                } else{
+                    flagMagnet = false;
+                }
             }
+
+        }
+
+        if( polygons.isSelfIntersection( mouseCurPoint ) ){
+            colorCurEdge = QColor( Qt::red );
+        } else{
+            colorCurEdge = QColor( Qt::blue );
         }
 
         // нарисовать отрезок до мышки
