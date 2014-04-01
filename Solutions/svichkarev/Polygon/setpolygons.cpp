@@ -2,6 +2,12 @@
 
 #include <qmath.h>
 
+#include <QDebug> // TODO
+
+SetPolygons::SetPolygons(){
+    indexStartingNewPolygon.append( 0 );
+}
+
 void SetPolygons::draw( MQPainter & painter ){
     // TODO:
     // сначала нарисуем все рёбра
@@ -19,19 +25,16 @@ QPoint SetPolygons::getLastPoint(){
 }
 
 void SetPolygons::addPoint( QPoint & curPoint ){
-    static QPoint * firstPoint = NULL;
-    if( edges.empty() ){
-        if( firstPoint == NULL ){
-            firstPoint = new QPoint( curPoint );
-            return;
-        }
-        if( *firstPoint != curPoint ){ // TODO:
-            indexStartingNewPolygon.append( 0 );
-            // TODO: костыль
-            edges.append( Edge( *firstPoint, curPoint ) );
-        }
+    if( isEmptyCurrentPolygon() ){
+        // начальное ребро каждого нового полигона вырожденное
+        edges.append( Edge( curPoint, curPoint ) );
     } else{
         edges.append( Edge( getLastPoint(), curPoint ) );
+        // определение замыкания
+        if( curPoint == getFirstPointCurrentPolygon() ){
+            // ставим индекс нового полигона
+            indexStartingNewPolygon.append( edges.size() );
+        }
     }
 }
 
@@ -39,6 +42,15 @@ void SetPolygons::addPoint( QPoint & curPoint ){
 void SetPolygons::removeLastPoint(){
     // <=> удалить последнее ребро
     edges.pop_back();
+}
+
+// TODO: сделать для текущего полигона
+bool SetPolygons::isEmptyCurrentPolygon(){
+    if( edges.empty() ){
+        return true;
+    }
+    qDebug() << edges.size() << indexStartingNewPolygon.last();
+    return (edges.size() == indexStartingNewPolygon.last());
 }
 
 //TODO: при замыкании будет возникать пересечение, нужно что-то придумать
@@ -54,26 +66,13 @@ bool SetPolygons::isSelfIntersection( QPoint & checkPoint ){
 
     // перебор всех существующих, кроме последнего!
     for( int i = 0; i < edges.size()-1; i++ ){
+        // TODO: пересечение работает плохо
         if( checkEdge.isIntersection( edges[ i ] ) ){
             return true;
         }
     }
 
     return false;
-}
-
-bool SetPolygons::isClose(){
-    // TODO: нормальное ли равенство?
-    // <=> сравнить первую и последнюю точку в текущем многоугольнике
-    if( edges.empty() ){
-        return true;
-    }
-
-    //TODO:
-    QPoint fp = getFirstPointCurrentPolygon();
-    QPoint lp = getLastPoint();
-
-    return ( getFirstPointCurrentPolygon() == getLastPoint() );
 }
 
 bool SetPolygons::isNearClose( QPoint & checkPoint ){

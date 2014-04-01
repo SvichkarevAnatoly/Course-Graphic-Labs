@@ -10,7 +10,7 @@ const QColor DrawPanel::DEFAULT_CONTOUR_COLOR( 100, 200, 120 );
 const QColor DrawPanel::DEFAULT_INNER_COLOR( 100, 200, 120 ); //TODO: поменять
 
 DrawPanel::DrawPanel( QWidget *parent ) :
-    QWidget( parent ), flagMagnet( false )
+    QWidget( parent ), flagMagnet( false ), mouseCurPoint( 0, 0 ) // TODO: не будет ли лагов с мышкой
 {
     // минимальные размеры устанавливаем
     setMinimumSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
@@ -42,6 +42,15 @@ void DrawPanel::paintEvent( QPaintEvent * ){
 
     // TODO: цвет
     polygons.draw( painter );
+
+    if( ! polygons.isEmptyCurrentPolygon() ){
+        if( ! flagMagnet ){
+            // TODO: константа
+            // нарисовать кружок рядом с начальной точкой
+            painter.drawCircle( polygons.getFirstPointCurrentPolygon(), 20 );
+        }
+        painter.drawLine( polygons.getLastPoint(), mouseCurPoint );
+    }
 
     painter.refreshImageBuffer( imgBuffer );
     painter.drawImage( this );
@@ -88,30 +97,27 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
 // для протягивания прямой за мышкой
 bool DrawPanel::eventFilter(QObject *, QEvent * event){
     if( event->type() == QEvent::MouseMove ){
-        //qDebug() << "MouseMove";
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>( event );
+
+        int xCoord = mouseEvent->pos().x() - width() / 2;
+        int yCoord = mouseEvent->pos().y() - height() / 2;
+        mouseCurPoint.setX( xCoord );
+        mouseCurPoint.setY( yCoord );
 
         // проверяем, если ещё многоугольник не замкнут, то тянем прямую к мышке
         //и рисуем кружок у первой точки многоугольника
-        if( ! polygons.isClose() ){ // пустой полигон считаем замкнутым
-            int xCoord = mouseEvent->pos().x() - width() / 2;
-            int yCoord = mouseEvent->pos().y() - height() / 2;
-            QPoint curPoint( xCoord, yCoord );
-
+        if( ! polygons.isEmptyCurrentPolygon() ){ // пустой полигон считаем замкнутым
             // если точка близка к начальной, то примагнитить её
-            if( polygons.isNearClose( curPoint ) ){
-                curPoint = polygons.getFirstPointCurrentPolygon();
+            if( polygons.isNearClose( mouseCurPoint ) ){
+                mouseCurPoint = polygons.getFirstPointCurrentPolygon();
                 flagMagnet = true;
             } else{
-                // иначе нарисовать кружок рядом с начальной
-                painter.drawCircle( polygons.getFirstPointCurrentPolygon(), 20 );
+                flagMagnet = false;
             }
-
-            // TODO: константа
-            // нарисовать отрезок до мышки
-            painter.drawLine( polygons.getLastPoint(), curPoint );
-            update(); //TODO: нужно ли
         }
+
+        // нарисовать отрезок до мышки
+        update();
     }
 
     return false;

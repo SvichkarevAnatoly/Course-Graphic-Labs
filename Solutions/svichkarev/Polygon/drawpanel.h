@@ -25,6 +25,7 @@ private:
 
     SetPolygons polygons;
 
+    QPoint mouseCurPoint;
     // флаг примагничивания
     bool flagMagnet;
 public:

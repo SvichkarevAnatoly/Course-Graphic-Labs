@@ -9,6 +9,8 @@
 
 class SetPolygons: public iDrawable{
 public:
+    SetPolygons();
+
     virtual void draw( MQPainter & painter );
 
     QPoint getFirstPointCurrentPolygon();
@@ -17,10 +19,10 @@ public:
     void addPoint( QPoint & curPoint ); //TODO:
     void removeLastPoint();
 
+    // проверяет, есть ли рёбра
+    bool isEmptyCurrentPolygon();
     // проверяем нет ли самопересечения, если есть, вернёт true, иначе false
     bool isSelfIntersection( QPoint & checkPoint ); //TODO
-    // проверка на замкнутость последнего многоугольника
-    bool isClose();
     // можно ли замкнуть многоугольник
     bool isNearClose( QPoint & checkPoint );
 
