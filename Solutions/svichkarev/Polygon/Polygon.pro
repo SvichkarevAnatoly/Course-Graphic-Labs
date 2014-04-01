@@ -12,7 +12,6 @@ HEADERS += \
            mainwindow.h \
            idrawable.h \
            fileWorker.h \
-    polygon.h \
     mqpainter.h \
     setpolygons.h \
     edge.h
@@ -21,7 +20,6 @@ SOURCES += \
            main.cpp \
            mainwindow.cpp \
            fileWorker.cpp \
-    polygon.cpp \
     mqpainter.cpp \
     setpolygons.cpp \
     edge.cpp

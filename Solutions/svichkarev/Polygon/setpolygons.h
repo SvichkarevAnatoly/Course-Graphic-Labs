@@ -31,6 +31,10 @@ private:
     QVector< Edge > edges;
     QVector< int > indexStartingNewPolygon;
 
+    // закрашивание полигона
+    void fillPolygon( MQPainter & painter, const QColor & color );
+    // заполнение интервалов по текущему ребру
+    void createXIntervals( const Edge & curEdge, QVector< QList< int > > & xIntervals, int minY );
 };
 
 #endif // SETPOLYGONS_H

@@ -18,6 +18,9 @@ public:
     void drawLine( const QPoint & p1, const QPoint & p2 );
     void drawCircle( const QPoint & center, int radius );
 
+    // закрасить линию
+    void drawLine( int y, int startX, int endX, const QColor & color );
+
     inline void refreshImageBuffer( QImage * buf ){
         img = buf;
     }

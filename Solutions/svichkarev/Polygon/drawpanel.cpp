@@ -68,6 +68,7 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
         // преобразуем координаты в систему центра экрана
         int xCoord = event->pos().x() - width() / 2;
         int yCoord = event->pos().y() - height() / 2;
+        qDebug() << xCoord << yCoord;
         QPoint curPoint( xCoord, yCoord );
 
         // проверяем нет ли самопересечения
