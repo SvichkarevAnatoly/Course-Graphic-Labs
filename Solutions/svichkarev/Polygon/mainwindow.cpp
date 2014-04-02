@@ -55,10 +55,10 @@ void MainWindow::openListener(){
     }
 
     // TODO:
-    /*try {
-        fileWorker::readFileSettings( fileNames.at(0).toStdString(), *(drawPanel->getCircle()) );
+    try {
+        fileWorker::readFileSettings( fileNames.at(0).toStdString(), drawPanel->getPolygons() );
     } catch(...) {
-    }*/
+    }
 }
 
 void MainWindow::saveListener(){
@@ -71,5 +71,5 @@ void MainWindow::saveListener(){
                                                     tr( "Documents (*.xml)" ) );
 
     // TODO:
-    //fileWorker::writeFileSettings( filename.toStdString(), *(drawPanel->getCircle()) );
+    fileWorker::writeFileSettings( filename.toStdString(), drawPanel->getPolygons() );
 }

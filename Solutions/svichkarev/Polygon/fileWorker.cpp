@@ -70,7 +70,7 @@ void fileWorker::writeFileSettings( const std::string &fileName, SetPolygons &po
     xmlWriter.writeStartElement("properties");
 
     xmlWriter.writeStartElement("comment");
-    xmlWriter.writeCharacters ("Circle properties");
+    xmlWriter.writeCharacters ("Polygon properties");
     xmlWriter.writeEndElement();
 
 

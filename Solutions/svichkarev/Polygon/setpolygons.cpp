@@ -2,6 +2,8 @@
 
 #include <qmath.h>
 
+#include <QDebug>  //TODO: убрать
+
 const QColor SetPolygons::DEFAULT_CONTOUR_COLOR( 79, 192, 178 );
 const QColor SetPolygons::DEFAULT_INNER_COLOR( 97, 156, 178 );
 
@@ -17,7 +19,7 @@ void SetPolygons::draw( MQPainter & painter ){
 
     painter.setColor( DEFAULT_INNER_COLOR );
 
-    // сначала нарисуем все рёбра
+    // нарисуем все рёбра
     for( int i = 0; i < edges.size(); i++ ){
         edges[ i ].draw( painter );
     }
@@ -144,10 +146,14 @@ void SetPolygons::addPoint( QPoint & curPoint ){
     }
 }
 
-// TODO: стирать значения и в индексном массиве
 void SetPolygons::removeLastPoint(){
     // <=> удалить последнее ребро
-    edges.pop_back();
+    if( ! edges.empty() ){
+        if( isEmptyCurrentPolygon() ){
+            indexStartingNewPolygon.pop_back();
+        }
+        edges.pop_back();
+    }
 }
 
 // TODO: сделать для текущего полигона

@@ -29,6 +29,10 @@ DrawPanel::~DrawPanel(){
     delete imgBuffer;
 }
 
+SetPolygons & DrawPanel::getPolygons(){
+    return polygons;
+}
+
 // вызывается в repaint()
 //отвечает так же за перерисовку при изменении окна
 void DrawPanel::paintEvent( QPaintEvent * ){
@@ -41,6 +45,8 @@ void DrawPanel::paintEvent( QPaintEvent * ){
         imgBuffer->fill( DEFAULT_BACKGROUND_COLOR );
     }
 
+    painter.refreshImageBuffer( imgBuffer );
+
     polygons.draw( painter );
 
     if( ! polygons.isEmptyCurrentPolygon() ){
@@ -49,10 +55,10 @@ void DrawPanel::paintEvent( QPaintEvent * ){
             painter.drawCircle( polygons.getFirstPointCurrentPolygon(), CLOSE_DISTANCE );
         }
         painter.setColor( colorCurEdge );
+        qDebug() << "last" << polygons.getLastPoint().x() << polygons.getLastPoint().y();
         painter.drawLine( polygons.getLastPoint(), mouseCurPoint );
     }
 
-    painter.refreshImageBuffer( imgBuffer );
     painter.drawImage( this );
 
     imgBuffer->fill( DEFAULT_BACKGROUND_COLOR );

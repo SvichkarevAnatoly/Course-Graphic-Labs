@@ -35,6 +35,8 @@ public:
     DrawPanel( QWidget *parent );
     virtual ~DrawPanel();
 
+    SetPolygons & getPolygons();
+
 private:
     /*Для нормальной работы при измении размеров окна нужно
         переводить координаты в систему центра окна,
