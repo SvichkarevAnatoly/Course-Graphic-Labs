@@ -5,9 +5,6 @@
 #include <QImage>
 #include <QPoint>
 
-/*Класс-клон, где мы определяем запрещённые методы отрисовки примитивов*/
-
-
 class MQPainter{
 public:
     MQPainter(){}

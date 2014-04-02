@@ -5,7 +5,6 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QTextStream>
-#include <QDebug> //TODO
 #include <iostream>
 
 int main( int argc, char** argv ){

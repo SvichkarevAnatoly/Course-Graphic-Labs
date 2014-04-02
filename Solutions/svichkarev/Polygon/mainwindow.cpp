@@ -79,6 +79,5 @@ void MainWindow::saveListener(){
                                                     QDir::currentPath(),
                                                     tr( "Documents (*.xml)" ) );
 
-    // TODO:
     fileWorker::writeFileSettings( filename.toStdString(), drawPanel->getPolygons(), drawPanel->geometry().width(), drawPanel->geometry().height() );
 }

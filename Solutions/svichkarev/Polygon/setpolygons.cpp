@@ -2,8 +2,6 @@
 
 #include <qmath.h>
 
-#include <QDebug>  //TODO: убрать
-
 const QColor SetPolygons::DEFAULT_CONTOUR_COLOR( 79, 192, 178 );
 const QColor SetPolygons::DEFAULT_INNER_COLOR( 97, 156, 178 );
 
@@ -135,7 +133,6 @@ int SetPolygons::getNumberEdgeCurrentPolygon(){
 QList< QPoint > SetPolygons::getListCurrentPoints(){
     QList< QPoint > listPoints;
 
-    int j = 0;
     foreach ( const Edge edge , edges) {
         listPoints.append( edge.p2 );
     }
@@ -173,16 +170,13 @@ void SetPolygons::removeAll(){
     }
 }
 
-// TODO: сделать для текущего полигона
 bool SetPolygons::isEmptyCurrentPolygon(){
     if( edges.empty() ){
         return true;
     }
-    //qDebug() << edges.size() << indexStartingNewPolygon.last();
     return (edges.size() == indexStartingNewPolygon.last());
 }
 
-//TODO: при замыкании будет возникать пересечение, нужно что-то придумать
 bool SetPolygons::isSelfIntersection( QPoint & checkPoint ){
     // <=> сравнить текущий отрезок со всеми уже существующими
     int result = 0;
@@ -215,7 +209,6 @@ bool SetPolygons::isNearClose( QPoint & checkPoint, int radius ){
     QPoint nearVector = getFirstPointCurrentPolygon() - checkPoint;
     double length = sqrt( pow(nearVector.x(), 2) + pow(nearVector.y(), 2) );
 
-    // TODO: константа
     if( length < radius ){ // внутри окрестности
         return true;
     }

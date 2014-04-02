@@ -1,16 +1,12 @@
 #include "fileWorker.h"
 
-#include <QDebug>
-
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <QFile>
 
-// TODO: сужение окна
 void fileWorker::readFileSettings( const std::string &fileName, SetPolygons &polygons, int & PanelWidth, int & PanelHeight ){
     QFile *file = new QFile( fileName.c_str() );
     if ( !file->open(QIODevice::ReadOnly | QIODevice::Text) ){
-        qDebug ( "bad file open" );
         return;
     }
 
@@ -78,10 +74,8 @@ void fileWorker::readFileSettings( const std::string &fileName, SetPolygons &pol
 }
 
 void fileWorker::writeFileSettings( const std::string &fileName, SetPolygons &polygons, int PanelWidth, int PanelHeight ){
-    qDebug ( "save" );
     QFile *file = new QFile( fileName.c_str() );
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text)){
-        qDebug ( "file open failed" );
         return;
     }
 
@@ -138,6 +132,5 @@ void fileWorker::saveImage( const std::string &fileName, SetPolygons &polygons, 
     try{
         image.save( QString( fileName.c_str() ), "png" );
     } catch(...){
-        qDebug() << "error save PNG";
     }
 }

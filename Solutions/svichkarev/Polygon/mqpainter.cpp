@@ -2,8 +2,6 @@
 
 #include <QPainter>
 
-#include <QDebug> // TODO
-
 MQPainter::MQPainter( QImage * im, const QColor & c ):
     img( im ), color( c )
 {

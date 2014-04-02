@@ -2,8 +2,6 @@
 
 #include "mqpainter.h"
 
-#include <QDebug>  //TODO: убрать
-
 #include <QMainWindow>
 
 const QColor DrawPanel::DEFAULT_BACKGROUND_COLOR( Qt::white );
@@ -55,7 +53,6 @@ void DrawPanel::paintEvent( QPaintEvent * ){
             painter.drawCircle( polygons.getFirstPointCurrentPolygon(), CLOSE_DISTANCE );
         }
         painter.setColor( colorCurEdge );
-        //qDebug() << "last" << polygons.getLastPoint().x() << polygons.getLastPoint().y();
         painter.drawLine( polygons.getLastPoint(), mouseCurPoint );
     }
 
@@ -68,11 +65,9 @@ void DrawPanel::paintEvent( QPaintEvent * ){
 //всё действо через этот метод
 void DrawPanel::mousePressEvent(QMouseEvent * event){
     if( event->button() == Qt::LeftButton ){
-        qDebug() << "mousePressEvent::LeftButton";
         // преобразуем координаты в систему центра экрана
         int xCoord = event->pos().x() - width() / 2;
         int yCoord = event->pos().y() - height() / 2;
-        qDebug() << xCoord << yCoord;
         QPoint curPoint( xCoord, yCoord );
 
         // проверяем нет ли самопересечения
@@ -91,7 +86,6 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
         update();
         event->accept();
     }else if( event->button() == Qt::RightButton ){
-        qDebug() << "mousePressEvent::RightButton";
         // удаляем последнюю точку
         polygons.removeLastPoint();
 
@@ -100,7 +94,6 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
     }
 }
 
-//TODO: после щелчка тоже бы надо перерисовать
 // для протягивания прямой за мышкой
 bool DrawPanel::eventFilter(QObject *, QEvent * event){
     if( event->type() == QEvent::MouseMove ){
