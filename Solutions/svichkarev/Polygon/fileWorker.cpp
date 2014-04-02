@@ -6,7 +6,7 @@
 #include <QXmlStreamWriter>
 #include <QFile>
 
-void fileWorker::readFileSettings( const std::string &fileName, Polygon &polygon ){
+void fileWorker::readFileSettings( const std::string &fileName, SetPolygons &polygons ){
     QFile *file = new QFile( fileName.c_str() );
     if ( !file->open(QIODevice::ReadOnly | QIODevice::Text) ){
         return;
@@ -54,7 +54,7 @@ void fileWorker::readFileSettings( const std::string &fileName, Polygon &polygon
     delete file;
 }
 
-void fileWorker::writeFileSettings( const std::string &fileName, Polygon &polygon ){
+void fileWorker::writeFileSettings( const std::string &fileName, SetPolygons &polygons ){
     qDebug ( "save" );
     QFile *file = new QFile( fileName.c_str() );
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text)){
@@ -99,7 +99,7 @@ void fileWorker::writeFileSettings( const std::string &fileName, Polygon &polygo
     delete file;
 }
 
-void fileWorker::saveImage( const std::string &fileName, Polygon &polygon, int PanelWidth, int PanelHeight, const QColor &color ){
+void fileWorker::saveImage( const std::string &fileName, SetPolygons &polygons, int PanelWidth, int PanelHeight, const QColor &color ){
     QImage image( PanelWidth, PanelHeight, QImage::Format_RGB888 );
     //TODO:
     //circle.draw( &image, color );

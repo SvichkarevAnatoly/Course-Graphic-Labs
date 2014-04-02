@@ -12,13 +12,14 @@ public:
     static const int DEFAULT_HEIGHT = 500;
     static const int DEFAULT_WIDTH = 500;
 
-    static const int CLOSE_DISTANCE = 35;
+    // радиус окружности автозамыкания
+    static const int CLOSE_DISTANCE = 10;
 
-    static const QColor DEFAULT_CONTOUR_COLOR;
-    static const QColor DEFAULT_INNER_COLOR;
-
-    static const uchar WHITE_COLOR = 255; //TODO: Большие буквы
-
+    // палитра приложения
+    static const QColor DEFAULT_BACKGROUND_COLOR;
+    static const QColor DEFAULT_MAIN_COLOR;
+    static const QColor DEFAULT_WARNING_COLOR;
+    static const QColor DEFAULT_AUTO_CLOSE_COLOR;
 private:
     MQPainter painter;
     QImage * imgBuffer;

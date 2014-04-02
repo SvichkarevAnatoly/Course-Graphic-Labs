@@ -6,11 +6,13 @@
 
 #include <QMainWindow>
 
-const QColor DrawPanel::DEFAULT_CONTOUR_COLOR( 100, 200, 120 );
-const QColor DrawPanel::DEFAULT_INNER_COLOR( 100, 200, 120 ); //TODO: поменять
+const QColor DrawPanel::DEFAULT_BACKGROUND_COLOR( Qt::white );
+const QColor DrawPanel::DEFAULT_WARNING_COLOR( 255, 10, 73 );
+const QColor DrawPanel::DEFAULT_AUTO_CLOSE_COLOR( Qt::green );
+const QColor DrawPanel::DEFAULT_MAIN_COLOR( Qt::black );
 
 DrawPanel::DrawPanel( QWidget *parent ) :
-    QWidget( parent ), flagMagnet( false ), mouseCurPoint( 0, 0 ) // TODO: не будет ли лагов с мышкой
+    QWidget( parent ), flagMagnet( false ), mouseCurPoint( 0, 0 )
 {
     // минимальные размеры устанавливаем
     setMinimumSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
@@ -36,28 +38,24 @@ void DrawPanel::paintEvent( QPaintEvent * ){
 
         delete imgBuffer;
         imgBuffer = new QImage( width(), height(), QImage::Format_RGB888 );
-        imgBuffer->fill( Qt::white );
-        qDebug() << "recreate bg"; //TODO: убрать
+        imgBuffer->fill( DEFAULT_BACKGROUND_COLOR );
     }
 
-    // TODO: цвет
     polygons.draw( painter );
 
     if( ! polygons.isEmptyCurrentPolygon() ){
         if( ! flagMagnet ){
-            // TODO: константа
             // нарисовать кружок рядом с начальной точкой
-            painter.drawCircle( polygons.getFirstPointCurrentPolygon(), 20 );
+            painter.drawCircle( polygons.getFirstPointCurrentPolygon(), CLOSE_DISTANCE );
         }
         painter.setColor( colorCurEdge );
         painter.drawLine( polygons.getLastPoint(), mouseCurPoint );
     }
 
     painter.refreshImageBuffer( imgBuffer );
-    painter.setColor( Qt::black );
     painter.drawImage( this );
 
-    imgBuffer->fill( Qt::white );
+    imgBuffer->fill( DEFAULT_BACKGROUND_COLOR );
 }
 
 // обработка нажатия на панеле
@@ -113,11 +111,17 @@ bool DrawPanel::eventFilter(QObject *, QEvent * event){
             // если число рёбер в полигоне больше 2, то можно попробовать замкнуть
             if( polygons.getNumberEdgeCurrentPolygon() > 2 ){
                 // если точка близка к начальной, то примагнитить её
-                if( polygons.isNearClose( mouseCurPoint ) ){
-                    // TODO: проверить самопересечения при автозамыкании
-                    mouseCurPoint = polygons.getFirstPointCurrentPolygon();
-                    colorCurEdge = QColor( Qt::green );
-                    flagMagnet = true;
+                if( polygons.isNearClose( mouseCurPoint, CLOSE_DISTANCE ) ){
+                    QPoint checkPoint( polygons.getFirstPointCurrentPolygon() );
+                    if( ! polygons.isSelfIntersection( checkPoint ) ){
+                        mouseCurPoint = checkPoint;
+                        colorCurEdge = DEFAULT_AUTO_CLOSE_COLOR;
+                        flagMagnet = true;
+
+                        // нарисовать отрезок до мышки
+                        update();
+                        return false;
+                    }
                 } else{
                     flagMagnet = false;
                 }
@@ -126,9 +130,9 @@ bool DrawPanel::eventFilter(QObject *, QEvent * event){
         }
 
         if( polygons.isSelfIntersection( mouseCurPoint ) ){
-            colorCurEdge = QColor( Qt::red );
+            colorCurEdge = DEFAULT_WARNING_COLOR;
         } else{
-            colorCurEdge = QColor( Qt::blue );
+            colorCurEdge = DEFAULT_MAIN_COLOR;
         }
 
         // нарисовать отрезок до мышки

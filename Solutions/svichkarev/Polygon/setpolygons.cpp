@@ -2,6 +2,9 @@
 
 #include <qmath.h>
 
+const QColor SetPolygons::DEFAULT_CONTOUR_COLOR( 79, 192, 178 );
+const QColor SetPolygons::DEFAULT_INNER_COLOR( 97, 156, 178 );
+
 SetPolygons::SetPolygons(){
     indexStartingNewPolygon.append( 0 );
 }
@@ -9,15 +12,17 @@ SetPolygons::SetPolygons(){
 void SetPolygons::draw( MQPainter & painter ){
     if( indexStartingNewPolygon.size() > 1 ){
         // запустим алгоритм закраски
-        fillPolygon( painter, Qt::darkCyan );
+        fillPolygon( painter, DEFAULT_CONTOUR_COLOR );
     }
 
-    painter.setColor( Qt::blue );
+    painter.setColor( DEFAULT_INNER_COLOR );
 
     // сначала нарисуем все рёбра
     for( int i = 0; i < edges.size(); i++ ){
         edges[ i ].draw( painter );
     }
+
+    painter.setColor( DEFAULT_CONTOUR_COLOR );
 }
 
 // TODO: простой алгоритм
@@ -157,6 +162,7 @@ bool SetPolygons::isEmptyCurrentPolygon(){
 //TODO: при замыкании будет возникать пересечение, нужно что-то придумать
 bool SetPolygons::isSelfIntersection( QPoint & checkPoint ){
     // <=> сравнить текущий отрезок со всеми уже существующими
+    int result = 0;
     if( isEmptyCurrentPolygon() ){
         return false;
     }
@@ -169,19 +175,25 @@ bool SetPolygons::isSelfIntersection( QPoint & checkPoint ){
     for( int i = 0; i < edges.size()-1; i++ ){
         // TODO: пересечение работает плохо
         if( checkEdge.isIntersection( edges[ i ] ) ){
-            return true;
+            result++;
         }
     }
 
-    return false;
+    // если это замыкание, т.е. точки совпадают(+вырожденное ребро), то это не самопересечение
+    if( (result == 2) && (checkPoint == getFirstPointCurrentPolygon()) ){
+        result = 0;
+    }
+
+    return (result != 0);
 }
 
-bool SetPolygons::isNearClose( QPoint & checkPoint ){
+bool SetPolygons::isNearClose( QPoint & checkPoint, int radius ){
+    // TODO: в левой половине круга почему-то не работает
     QPoint nearVector = getFirstPointCurrentPolygon() - checkPoint;
     double length = sqrt( pow(nearVector.x(), 2) + pow(nearVector.y(), 2) );
 
     // TODO: константа
-    if( length < 20 ){ // внутри окрестности
+    if( length < radius ){ // внутри окрестности
         return true;
     }
 

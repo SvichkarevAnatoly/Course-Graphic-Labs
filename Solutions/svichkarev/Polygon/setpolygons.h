@@ -9,6 +9,9 @@
 
 class SetPolygons: public iDrawable{
 public:
+    static const QColor DEFAULT_CONTOUR_COLOR;
+    static const QColor DEFAULT_INNER_COLOR;
+
     SetPolygons();
 
     virtual void draw( MQPainter & painter );
@@ -17,15 +20,15 @@ public:
     QPoint getLastPoint();
     int getNumberEdgeCurrentPolygon();
 
-    void addPoint( QPoint & curPoint ); //TODO:
+    void addPoint( QPoint & curPoint );
     void removeLastPoint();
 
     // проверяет, есть ли рёбра
     bool isEmptyCurrentPolygon();
     // проверяем нет ли самопересечения, если есть, вернёт true, иначе false
-    bool isSelfIntersection( QPoint & checkPoint ); //TODO
+    bool isSelfIntersection( QPoint & checkPoint );
     // можно ли замкнуть многоугольник
-    bool isNearClose( QPoint & checkPoint );
+    bool isNearClose( QPoint & checkPoint, int radius );
 
 private:
     QVector< Edge > edges;

@@ -89,15 +89,11 @@ void MQPainter::drawLine( int y, int startX, int endX, const QColor & color ){
     int w = img->width();
     int h = img->height();
 
-    //qDebug() << "w = " << w;
-    //qDebug() << "h = " << h;
-
     setColor( color );
 
     startX += w / 2;
     endX += w / 2;
     for( int x = startX; x <= endX; x++ ){
-        //qDebug() << "ind = " << y_bpl + x*3 + 2;
         drawPoint( x, y + h/2 );
     }
 }

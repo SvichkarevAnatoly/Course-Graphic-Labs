@@ -1,4 +1,3 @@
-#include "polygon.h"
 #include "mainwindow.h"
 
 #include "fileWorker.h"

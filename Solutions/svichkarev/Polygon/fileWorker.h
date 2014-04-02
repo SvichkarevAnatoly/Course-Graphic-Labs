@@ -1,13 +1,13 @@
 #ifndef FILEWORKER_H
 #define FILEWORKER_H
 
-#include "polygon.h"
+#include "setpolygons.h"
 
 class fileWorker{
 public:
-    static void saveImage( const std::string &fileName, Polygon &polygon, int PanelWidth, int PanelHeight, const QColor &color );
-    static void readFileSettings( const std::string &fileName, Polygon &polygon );
-    static void writeFileSettings( const std::string &fileName, Polygon &polygon );
+    static void saveImage( const std::string &fileName, SetPolygons &polygons, int PanelWidth, int PanelHeight, const QColor &color );
+    static void readFileSettings( const std::string &fileName, SetPolygons &polygons );
+    static void writeFileSettings( const std::string &fileName, SetPolygons &polygons );
 };
 
 #endif // FILEWORKER_H
