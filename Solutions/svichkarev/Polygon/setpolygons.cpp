@@ -44,7 +44,7 @@ void SetPolygons::fillPolygon( MQPainter & painter, const QColor & color ){
         if( i == indexStartingNewPolygon[j]  ){
             j++;
         } else{
-            Edge & curEdge = edges[ i ];
+            Edge curEdge = edges[ i ];
             // если нужно перевернуть - переворачиваем
             if( curEdge.p1.y() > curEdge.p2.y() ){
                 std::swap( curEdge.p1, curEdge.p2 );
@@ -132,6 +132,17 @@ int SetPolygons::getNumberEdgeCurrentPolygon(){
     return (edges.size() - indexStartingNewPolygon.last());
 }
 
+QList< QPoint > SetPolygons::getListCurrentPoints(){
+    QList< QPoint > listPoints;
+
+    int j = 0;
+    foreach ( const Edge edge , edges) {
+        listPoints.append( edge.p2 );
+    }
+
+    return listPoints;
+}
+
 void SetPolygons::addPoint( QPoint & curPoint ){
     if( isEmptyCurrentPolygon() ){
         // начальное ребро каждого нового полигона вырожденное
@@ -153,6 +164,12 @@ void SetPolygons::removeLastPoint(){
             indexStartingNewPolygon.pop_back();
         }
         edges.pop_back();
+    }
+}
+
+void SetPolygons::removeAll(){
+    while( ! edges.empty() ){
+        removeLastPoint();
     }
 }
 

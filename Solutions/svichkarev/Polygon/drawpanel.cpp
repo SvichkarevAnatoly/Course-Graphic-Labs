@@ -55,7 +55,7 @@ void DrawPanel::paintEvent( QPaintEvent * ){
             painter.drawCircle( polygons.getFirstPointCurrentPolygon(), CLOSE_DISTANCE );
         }
         painter.setColor( colorCurEdge );
-        qDebug() << "last" << polygons.getLastPoint().x() << polygons.getLastPoint().y();
+        //qDebug() << "last" << polygons.getLastPoint().x() << polygons.getLastPoint().y();
         painter.drawLine( polygons.getLastPoint(), mouseCurPoint );
     }
 

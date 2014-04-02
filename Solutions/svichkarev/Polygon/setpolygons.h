@@ -19,9 +19,13 @@ public:
     QPoint getFirstPointCurrentPolygon();
     QPoint getLastPoint();
     int getNumberEdgeCurrentPolygon();
+    // возвращает все текущие вершины
+    QList< QPoint > getListCurrentPoints();
 
     void addPoint( QPoint & curPoint );
     void removeLastPoint();
+
+    void removeAll();
 
     // проверяет, есть ли рёбра
     bool isEmptyCurrentPolygon();

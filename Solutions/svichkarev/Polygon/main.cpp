@@ -13,18 +13,27 @@ int main( int argc, char** argv ){
         QCoreApplication app(argc, argv);
         QTextStream out(stdout);
 
-        if( argc == 4 ){
-            SetPolygons polygons;
-            const QColor color( 100, 200, 120 );
-            try{
-                fileWorker::readFileSettings( argv[1], polygons );
-                std::string filename("output.png");
-                fileWorker::saveImage( filename, polygons, atoi( argv[2] ), atoi( argv[3] ), color );
-            } catch(...){
-                out << "Reading polygons settings  error" << endl;
+        SetPolygons polygons;
+        try{
+            int PanelWidth = -1;
+            int PanelHeight = -1;
+            fileWorker::readFileSettings( argv[1], polygons, PanelWidth, PanelHeight );
+            std::string filename( "output.png" );
+
+            // если нет размеров полотна в командной строке, то взять из файла
+            if( argc == 2 ){
+                if( ( PanelWidth > 0 ) && ( PanelHeight > 0 ) ){
+                    fileWorker::saveImage( filename, polygons, PanelWidth, PanelHeight );
+                } else{
+                    out << "Error: usage: polygons file.xml PanelWidth PanelHeight or specify in .xml" << endl;
+                }
+            } else{
+                if( argc == 4 ){
+                    fileWorker::saveImage( filename, polygons, atoi( argv[2] ), atoi( argv[3] ) );
+                }
             }
-        } else{
-            out << "Error: usage: polygons file.xml PanelWidth PanelHeight" << endl;
+        } catch(...){
+            out << "Reading polygons settings  error" << endl;
         }
 
         app.exit();

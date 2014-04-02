@@ -15,7 +15,12 @@ void MQPainter::drawImage( QWidget * w ){
 }
 
 void MQPainter::drawPoint( int x, int y ){
-    // без проверок, на доверие
+    // проверка на вхождение в пределы картинки
+    if( ( y < 0 ) || ( x < 0 ) ||
+        ( x > img->width() ) || ( y > img->height() ) ){
+        return;
+    }
+
     uchar * bytes = img->bits();
     int bpl = img->bytesPerLine();
 

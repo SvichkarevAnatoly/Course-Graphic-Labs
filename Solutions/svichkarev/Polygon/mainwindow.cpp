@@ -54,10 +54,19 @@ void MainWindow::openListener(){
         return;
     }
 
-    // TODO:
+    // очистить от прошлых полигонов
+    drawPanel->getPolygons().removeAll();
+
+    int PanelWidth = -1;
+    int PanelHeight = -1;
+
     try {
-        fileWorker::readFileSettings( fileNames.at(0).toStdString(), drawPanel->getPolygons() );
+        fileWorker::readFileSettings( fileNames.at(0).toStdString(), drawPanel->getPolygons(), PanelWidth, PanelHeight );
+        if( ( PanelWidth > 0 ) && ( PanelHeight > 0 ) ){
+            drawPanel->setMinimumSize( PanelWidth, PanelHeight );
+        }
     } catch(...) {
+        // TODO
     }
 }
 
@@ -71,5 +80,5 @@ void MainWindow::saveListener(){
                                                     tr( "Documents (*.xml)" ) );
 
     // TODO:
-    fileWorker::writeFileSettings( filename.toStdString(), drawPanel->getPolygons() );
+    fileWorker::writeFileSettings( filename.toStdString(), drawPanel->getPolygons(), drawPanel->geometry().width(), drawPanel->geometry().height() );
 }
