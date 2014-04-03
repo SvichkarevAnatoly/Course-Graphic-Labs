@@ -1,7 +1,12 @@
 #include "setpolygons.h"
 
+#include "aetedge.h"
+
 #include <qmath.h>
 
+#include <QDebug>
+
+// TODO: цвета
 const QColor SetPolygons::DEFAULT_CONTOUR_COLOR( 79, 192, 178 );
 const QColor SetPolygons::DEFAULT_INNER_COLOR( 97, 156, 178 );
 
@@ -25,16 +30,19 @@ void SetPolygons::draw( MQPainter & painter ){
     painter.setColor( DEFAULT_CONTOUR_COLOR );
 }
 
-// TODO: простой алгоритм
+// TODO: можно поддерживать состояние служебного списка AET с основным,
+//а не создавать новый каждый раз, но тогда нужны механизмы синхронизации
+// TODO: заполнять служебный список вместе с основным
+// алгоритм со списком активных рёбер(AET)
 void SetPolygons::fillPolygon( MQPainter & painter, const QColor & color ){
     // закрашиваем только замкнутые полигоны
 
     // вначале создаём копию массива рёбер и упорядочиваем
     //каждое ребро, чтобы меньший у был первым,
     //затем все рёбра по первому у
-    QList< Edge > copyEdges;
-    int maxY = -5000;
-    int minY = 5000;
+    int minY = INT_MAX;
+    int maxY = INT_MIN;
+    QVector< Edge > copyEdges;
 
     int j = 0;
     for( int i = 0; i < indexStartingNewPolygon.last(); i++ ){
@@ -48,13 +56,13 @@ void SetPolygons::fillPolygon( MQPainter & painter, const QColor & color ){
                 std::swap( curEdge.p1, curEdge.p2 );
             }
 
-            // находим минимум и максимум, для создания вектора интервалов
-            if( curEdge.p2.y() > maxY ){
-                maxY = curEdge.p2.y();
-            }
-
+            // находим минимум, для точки начала алгоритма
             if( curEdge.p1.y() < minY ){
                 minY = curEdge.p1.y();
+            }
+
+            if( curEdge.p2.y() > maxY ){
+                maxY = curEdge.p2.y();
             }
 
             // копируем в служебный
@@ -62,45 +70,88 @@ void SetPolygons::fillPolygon( MQPainter & painter, const QColor & color ){
         }
     }
 
-    // для закрашиваемых интервалов
-    QVector< QList< int > > xIntervals( maxY - minY );
+    // сортировка по y
+    qSort( copyEdges );
 
-    QList< Edge >::const_iterator it = copyEdges.begin();
-    // для каждого ребра
-    while(it != copyEdges.end()) {
-        createXIntervals( *it, xIntervals, minY );
+    QVector< AETEdge > aet;
+    int yNext;
 
-        it++;
-    }
-
-    // выполним сортировку по каждому
-    QVector< QList< int > >::iterator it2 = xIntervals.begin();
-    // для каждого ребра
-    while(it2 != xIntervals.end()) {
-        qSort( *it2 );
-        it2++;
-    }
-
-    // начинаем закрашивать
+    QVector< Edge >::ConstIterator it = copyEdges.begin();
+    // основной цикл по строкам
     int curY = minY;
-    foreach( const QList<int> interval, xIntervals ){
-        QList<int>::const_iterator it = interval.begin();
-
-        while( it != interval.end() ){
-            int start = *it;
-            ++it;
-            int end = *it;
-
-            // отрисовать линию
-            painter.drawLine( curY, start, end, color );
-
-            ++it;
-            if( it == interval.end() ){
-                break;
+    while( curY < maxY ){ //TODO
+        // определение yNext
+        yNext = INT_MAX;
+        // добавление новых рёбер в AET
+        while( curY == it->p1.y() ){
+            // горизонтальные рёбра сразу отрисовываем
+            if( it->p1.y() == it->p2.y() ){// TODO: использовать swap
+                if( it->p1.x() <= it->p2.x() ){ // определяем х начальное
+                    painter.drawLine( curY, it->p1.x(), it->p2.x(), color );
+                }else{
+                    painter.drawLine( curY, it->p2.x(), it->p1.x(), color );
+                }
+            } else{
+                aet.append( AETEdge( it->p2.y(), (double)( it->p2.x() - it->p1.x() ) / ( it->p2.y() - it->p1.y() ), it->p1.x() ) );
+                if( it->p2.y() < yNext ){
+                    yNext = it->p2.y();
+                }
             }
+            ++it;
         }
 
-        curY++;
+        // перепроверяем следующий ближайший yNext по активным рёбрам
+        QVector< AETEdge >::Iterator it2 = aet.begin();
+        while( it2 != aet.end() ){
+            if( it2->yEnd < yNext ){
+                yNext = it2->yEnd;
+            }
+
+            ++it2;
+        }
+
+        // проверим начало ближайшего следующего ребра, может быть ближе,
+        //чем ближайший конец из активного списка
+        if( ( it != copyEdges.end() ) && (it->p1.y() < yNext) ){
+            // но не забудем прошлого значения, потом может быть ближайшим
+            yNext = it->p1.y();
+        }
+
+        // не заботимся о y, просто инкрементируем
+        while( curY < yNext ){
+            QVector< int > xInterval;
+
+            QVector< AETEdge >::Iterator itEdge = aet.begin();
+            for( ; itEdge != aet.end(); ++itEdge ){
+                xInterval.append( (int)itEdge->xCurrent );
+                itEdge->xCurrent += itEdge->dx;
+            }
+            qSort( xInterval );
+
+            QVector< int >::const_iterator itX = xInterval.begin();
+            while( itX != xInterval.end() ){
+                int start = *itX;
+                ++itX;
+                int end = *itX;
+
+                // отрисовать линию
+                painter.drawLine( curY, start, end, color );
+
+                ++itX;
+            }
+
+            curY++;
+        }
+
+        // выкинуть все рёбра из AET, которые закончились
+        QVector< AETEdge >::Iterator it = aet.begin();
+        while( it != aet.end() ){
+            if( curY == it->yEnd ){
+                it = aet.erase( it );
+            } else{
+                ++it;
+            }
+        }
     }
 }
 

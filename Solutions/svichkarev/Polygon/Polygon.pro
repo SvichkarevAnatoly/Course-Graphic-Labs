@@ -14,7 +14,8 @@ HEADERS += \
            fileWorker.h \
     mqpainter.h \
     setpolygons.h \
-    edge.h
+    edge.h \
+    aetedge.h
 SOURCES += \
            drawpanel.cpp \
            main.cpp \
@@ -22,4 +23,5 @@ SOURCES += \
            fileWorker.cpp \
     mqpainter.cpp \
     setpolygons.cpp \
-    edge.cpp
+    edge.cpp \
+    aetedge.cpp

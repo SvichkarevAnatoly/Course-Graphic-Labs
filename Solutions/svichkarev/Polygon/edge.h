@@ -14,6 +14,15 @@ public:
 
     bool isIntersection( Edge & e );
 
+    // для сортировки контейнера
+    bool operator<( const Edge & edge) const {
+        return getP1Y() < edge.getP1Y();
+    }
+
+    inline int getP1Y() const{
+        return p1.y();
+    }
+
     // чтобы легче было изменять
     QPoint p1, p2;
 
