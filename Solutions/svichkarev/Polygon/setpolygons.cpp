@@ -15,12 +15,13 @@ SetPolygons::SetPolygons(){
 }
 
 void SetPolygons::draw( MQPainter & painter ){
+
     if( indexStartingNewPolygon.size() > 1 ){
         // запустим алгоритм закраски
-        fillPolygon( painter, DEFAULT_CONTOUR_COLOR );
+        fillPolygon( painter, DEFAULT_INNER_COLOR );
     }
 
-    painter.setColor( DEFAULT_INNER_COLOR );
+    painter.setColor( DEFAULT_CONTOUR_COLOR );
 
     // нарисуем все рёбра
     for( int i = 0; i < edges.size(); i++ ){

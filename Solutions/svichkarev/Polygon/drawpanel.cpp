@@ -45,15 +45,24 @@ void DrawPanel::paintEvent( QPaintEvent * ){
 
     painter.refreshImageBuffer( imgBuffer );
 
-    polygons.draw( painter );
+    bool flagDraw = false;
 
     if( ! polygons.isEmptyCurrentPolygon() ){
         if( ! flagMagnet ){
             // нарисовать кружок рядом с начальной точкой
             painter.drawCircle( polygons.getFirstPointCurrentPolygon(), CLOSE_DISTANCE );
+        } else{ // TODO: отрисовка сразу при автозамыкании
+            polygons.addPoint( mouseCurPoint );
+            polygons.draw( painter );
+            polygons.removeLastPoint();
+            flagDraw = true;
         }
         painter.setColor( colorCurEdge );
         painter.drawLine( polygons.getLastPoint(), mouseCurPoint );
+    }
+
+    if( ! flagDraw ){
+        polygons.draw( painter );
     }
 
     painter.drawImage( this );

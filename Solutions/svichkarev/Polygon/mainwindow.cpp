@@ -54,6 +54,8 @@ void MainWindow::openListener(){
         return;
     }
 
+    fileDialog->deleteLater();
+
     // очистить от прошлых полигонов
     drawPanel->getPolygons().removeAll();
 
@@ -78,6 +80,8 @@ void MainWindow::saveListener(){
                                                     tr( "Save settings" ),
                                                     QDir::currentPath(),
                                                     tr( "Documents (*.xml)" ) );
+
+    fileDialog->deleteLater();
 
     fileWorker::writeFileSettings( filename.toStdString(), drawPanel->getPolygons(), drawPanel->geometry().width(), drawPanel->geometry().height() );
 }
