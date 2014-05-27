@@ -12,27 +12,30 @@ const double Triangle::MAX_ANGLE = 360.0;
 const double Triangle::DEFAULT_SCALE_X = 1.0;
 const double Triangle::DEFAULT_SCALE_Y = 1.0;
 
-Triangle::Triangle()
-{
-}
-
+Triangle::Triangle(){}
 
 void Triangle::changePoints(const TexturedPoint& a, const TexturedPoint& b, const TexturedPoint& c){
+    // заполняем вектор вершин
     points.clear();
     points.push_back(a);
     points.push_back(b);
     points.push_back(c);
+
+    // установка параметоров начальных
     currAngle = 0;
     currScaleX = DEFAULT_SCALE_X;
     currScaleY = DEFAULT_SCALE_Y;
+
+    //?
+    // вычисление центра вращения
     rotCenterX = (a.x() + b.x() + c.x())/3.;
     rotCenterY = (a.y() + b.y() + c.y())/3.;
 }
 
+// функции изменения параметров
 void Triangle::setRotateCenter(double xc, double yc){
     rotCenterX = xc;
     rotCenterY = yc;
-//TODO: emit ?
 }
 
 void Triangle::scaleX(double q){
@@ -57,6 +60,7 @@ void Triangle::setMaxY(int maxY){
     this->maxY = maxY;
 }
 
+//?
 void Triangle::transform(std::vector<TexturedPoint> &new_points){
     double tr_mat[3][2];    
     double radians = currAngle * RAD_IN_GRAD;// TODO : radians теряет точность
@@ -81,6 +85,7 @@ void Triangle::transform(std::vector<TexturedPoint> &new_points){
     }
 }
 
+//?
 void Triangle::draw(Canvas& canvas, Texture* texture = 0) {
     std::vector<TexturedPoint> points;
     transform(points);

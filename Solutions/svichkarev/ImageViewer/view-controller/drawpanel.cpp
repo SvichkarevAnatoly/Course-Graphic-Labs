@@ -6,9 +6,11 @@ DrawPanel::DrawPanel(int w, int h,   QWidget *parent) :
     QWidget(parent),Canvas(w,h),square(w,w/2,h/2), texture(w)
 {
     setFixedSize(w, h);
-    texture.load("cells.png");
+
     square.setSize(texture.get_size());
     square.setMax(w,h);
+
+    // установка обработчиков событий на изменения квадрата
     QObject::connect(&square, SIGNAL(scaleXChanged(double)), &texture, SLOT(setScaleX(double)));
     QObject::connect(&square, SIGNAL(scaleYChanged(double)), &texture, SLOT(setScaleY(double)));
 
@@ -16,23 +18,29 @@ DrawPanel::DrawPanel(int w, int h,   QWidget *parent) :
     QObject::connect(&square, SIGNAL(scaleXChanged(double)), this, SLOT(repaint_square()));
     QObject::connect(&square, SIGNAL(scaleYChanged(double)), this, SLOT(repaint_square()));
 
+    // первая отрисовка
     square.draw(*this, &texture);
 }
 
-void DrawPanel::paintEvent(QPaintEvent *event)
-{
+// системный обработчик отрисовки графической области
+void DrawPanel::paintEvent(QPaintEvent *event){
     QPainter painter(this);
     painter.drawImage(0,0, image);
 }
 
+// функция загрузки текстуры из файла
 void DrawPanel::open(const std::string& filename){
     texture.load(filename);
     square.setSize(texture.get_size());
     square.setDefault();
+
+    // отрисовка
     repaint_square();
 }
 
+// предобработчик перерисовки
 void DrawPanel::repaint_square(){
+    // отрисовка квадрата
     square.draw(*this, &texture);
     repaint();
 }

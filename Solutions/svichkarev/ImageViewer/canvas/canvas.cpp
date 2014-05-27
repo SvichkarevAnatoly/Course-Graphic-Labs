@@ -7,13 +7,14 @@ Canvas::Canvas(int w, int h)
     clear();
 }
 
-Canvas::Canvas(const Canvas& other)
-{
+// конструктор копирования
+Canvas::Canvas(const Canvas& other){
     width = other.width;
     height = other.height;
     image = other.image;
 }
 
+// переопределение оператора присваивание
 Canvas& Canvas::operator=(const Canvas& c){
     width = c.width;
     height = c.height;
@@ -21,10 +22,9 @@ Canvas& Canvas::operator=(const Canvas& c){
     return *this;
  }
 
-Canvas::~Canvas(){
+Canvas::~Canvas(){}
 
-}
-
+// гетеры
 int Canvas::getWidth() {
     return width;
 }
@@ -37,6 +37,7 @@ const QImage& Canvas::getImage() const{
     return image;
 }
 
+// отрисовка пикселя указанным цветом
 void Canvas::drawPixel(const int x, const int y, const QColor color){
     int r, g, b;
     color.getRgb(&r, &g, &b);
@@ -46,6 +47,7 @@ void Canvas::drawPixel(const int x, const int y, const QColor color){
     bytes[ y * image.bytesPerLine() + x * 3 + 2] = b;
 }
 
+// отрисовка отрезка по алгоритму Брезенхема
 void Canvas::drawBresenhamLine(const QPoint& a, const QPoint& b, const QColor color){
     if (a.x() == b.x() && a.y() == b.y() ) return;
     const int deltaX = abs(b.x() - a.x());
@@ -74,6 +76,7 @@ void Canvas::drawBresenhamLine(const QPoint& a, const QPoint& b, const QColor co
     }
 }
 
+// установка размера
 void Canvas::setSize(int w, int h){
     width = w;
     height = h;
@@ -81,6 +84,7 @@ void Canvas::setSize(int w, int h){
     clear();
 }
 
+// заполнение картинки белым
 void Canvas::clear(){
     image.fill(Qt::white);
 }

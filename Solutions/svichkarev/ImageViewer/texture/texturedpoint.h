@@ -29,12 +29,14 @@ public:
     static QColor transformToColor(double tx, double ty);
     static bool compX(const TexturedPoint& a, const TexturedPoint& b);
 
+    // перегрузка сравнения двух точек по их y компоненте
     friend bool operator<(const TexturedPoint& a, const TexturedPoint& b)  {
         return a.y() < b.y();
     }
 
 
 private:
+    // длина отрезка
     static double norm(double x, double y) {
         return sqrt(pow(x, 2)+pow(y,2));
     }

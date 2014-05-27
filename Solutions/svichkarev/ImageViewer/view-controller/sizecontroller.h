@@ -14,11 +14,11 @@ class SizeController : public QWidget{
     QGridLayout layout;
     QLabel label;
     QDoubleSpinBox spinEditor;
+    DoubleSlider slider;
 
     double min;
     double max;
     double value;
-    DoubleSlider slider;
 public:
     SizeController(QWidget*,const std::string& label, double min, double max, double val);
     double getValue() const;

@@ -14,23 +14,27 @@ public:
         connect(this, SIGNAL(valueChanged(int)),
             this, SLOT(notifyValueChanged(int)));
 
+        // установка границ в процентах
         setRange(min*10, max*10);
-
     }
 
 signals:
     void doubleValueChanged(double value);
 
 public slots:
+    // переводящий в проценты обработчик
     void notifyValueChanged(int value) {
         double doubleValue = value*1.0 / 10;
-        emit doubleValueChanged(doubleValue);
+        emit doubleValueChanged( doubleValue );
     }
-    void setDoubleValue(double value) {
 
+    // если пришло значение double
+    void setDoubleValue(double value) {
+        // заблокировать на время изменения посылку сигналов
         bool t = blockSignals(true);
         setValue((int)value*10);
 
+        // затем разблокировать
         blockSignals(t);
     }
 };

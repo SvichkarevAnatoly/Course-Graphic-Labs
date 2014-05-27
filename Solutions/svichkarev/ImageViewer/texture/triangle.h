@@ -8,12 +8,11 @@
 #include "texturedpoint.h"
 #include "texture.h"
 
-class Triangle : public QObject
-{
+class Triangle : public QObject{
     Q_OBJECT
 private:
-                // get point color
     std::vector<TexturedPoint> points;
+
     double rotCenterX;
     double rotCenterY;
 
@@ -28,9 +27,8 @@ public:
     Triangle();
     void changePoints(const TexturedPoint& a, const TexturedPoint& b, const TexturedPoint& c);
     void draw(Canvas& canvas, Texture*);
-/*
- * клипирование
- */
+
+    // клипирование
     void setMaxX(int maxX);
     void setMaxY(int maxY);
 signals:
@@ -43,12 +41,8 @@ public slots:
     void setRotateCenter(double xc, double xy);
     void scaleX(double q);
     void scaleY(double q);
-
 private:
-
     void transform(std::vector<TexturedPoint>& new_points);
-
-
 public:
     static const double RAD_IN_GRAD;
     static const double MIN_SCALE_X;

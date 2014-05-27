@@ -12,8 +12,10 @@ private:
     double yc;
     double leftX, rightX;
     double downY, upY;
+
     Triangle leftDownTriangle;
     Triangle rightUpTriangle;
+
     int size;
     int maxX;
     int maxY;

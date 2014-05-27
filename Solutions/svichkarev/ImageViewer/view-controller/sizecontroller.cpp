@@ -20,7 +20,6 @@ SizeController::SizeController(QWidget* p, const std::string& string, double min
     slider.setFixedSize(200, 20);
     slider.setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
-    //? как связь организована?
     // регистрация событий
     QObject::connect(&slider, SIGNAL(doubleValueChanged(double)), &spinEditor, SLOT(setValue(double)));
     QObject::connect(&spinEditor, SIGNAL(valueChanged(double)), &slider, SLOT(setDoubleValue(double)));
@@ -45,7 +44,6 @@ SizeController::SizeController(QWidget* p, const std::string& string, double min
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-//?
 double SizeController::getValue() const{
     return slider.value();
 }

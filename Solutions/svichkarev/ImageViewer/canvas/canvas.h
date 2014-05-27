@@ -4,15 +4,8 @@
 #include <QImage>
 #include <QColor>
 #include <QPoint>
-/*
- * QImage
- * drawPixel
- * drawLine
- */
 
-
-class Canvas
-{
+class Canvas{
 protected:
     int width;
     int height;

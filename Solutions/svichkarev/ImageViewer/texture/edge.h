@@ -17,6 +17,7 @@ public:
 
     double getK() const;
 
+    // сравнение двух рёбер по первой точке
     friend bool operator<(const Edge& a, const Edge& b)  {
         return a.getA() < b.getA();
     }

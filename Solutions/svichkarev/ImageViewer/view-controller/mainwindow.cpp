@@ -25,7 +25,6 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     QGroupBox* controllersBox = new QGroupBox(this);
     QGroupBox* drawPanelBox= new QGroupBox(this);
 
-    //?
     // установка обработчиков различных событий изменения
     QObject::connect(&drawPanel->getSquare(), SIGNAL(angleChanged(double)), rotateContr, SLOT(setValue(double)));
     QObject::connect(rotateContr, SIGNAL(valueChanged(double)), &drawPanel->getSquare(), SLOT(rotate(double)));
@@ -34,7 +33,6 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     QObject::connect(scaleXContr,SIGNAL(valueChanged(double)), &drawPanel->getSquare(), SLOT(scaleX(double)));
     QObject::connect(scaleYContr,SIGNAL(valueChanged(double)), &drawPanel->getSquare(), SLOT(scaleY(double)));
 
-    //? изменять размер можно всё-таки
     // сборка в единое целое и установление размеров
     QVBoxLayout* panelLayout = new QVBoxLayout();
     panelLayout->addWidget(drawPanel);

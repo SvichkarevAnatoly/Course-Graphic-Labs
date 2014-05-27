@@ -16,7 +16,6 @@ SOURCES += main.cpp\
     canvas/canvas.cpp \
     view-controller/mainwindow.cpp \
     view-controller/sizecontroller.cpp \
-    view-controller/doubleslider.cpp \
     view-controller/drawpanel.cpp \
     texture/square.cpp \
     texture/filter/bilinear.cpp \
