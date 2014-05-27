@@ -17,15 +17,16 @@
 MainWindow::MainWindow(int w, int h, QWidget *parent)
     : QMainWindow(parent)
 {
-
-    drawPanel = new DrawPanel(w,h, this);
+    // создание панели для рисования и контроллеров
+    drawPanel = new DrawPanel( w, h, this );
     SizeController* rotateContr = new SizeController(this, "ANGLE",  0, 360, 0);
     SizeController* scaleXContr= new SizeController(this, "SCALE X", 0.1, 10, 1);
     SizeController* scaleYContr= new SizeController(this, "SCALE Y", 0.1, 10, 1);
     QGroupBox* controllersBox = new QGroupBox(this);
     QGroupBox* drawPanelBox= new QGroupBox(this);
 
-
+    //?
+    // установка обработчиков различных событий изменения
     QObject::connect(&drawPanel->getSquare(), SIGNAL(angleChanged(double)), rotateContr, SLOT(setValue(double)));
     QObject::connect(rotateContr, SIGNAL(valueChanged(double)), &drawPanel->getSquare(), SLOT(rotate(double)));
     QObject::connect(&drawPanel->getSquare(), SIGNAL(scaleXChanged(double)), scaleXContr, SLOT(setValue(double)));
@@ -33,6 +34,8 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     QObject::connect(scaleXContr,SIGNAL(valueChanged(double)), &drawPanel->getSquare(), SLOT(scaleX(double)));
     QObject::connect(scaleYContr,SIGNAL(valueChanged(double)), &drawPanel->getSquare(), SLOT(scaleY(double)));
 
+    //? изменять размер можно всё-таки
+    // сборка в единое целое и установление размеров
     QVBoxLayout* panelLayout = new QVBoxLayout();
     panelLayout->addWidget(drawPanel);
     drawPanelBox->setLayout(panelLayout);
@@ -41,6 +44,7 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     panelLayout->setSizeConstraint(QLayout::SetFixedSize);
     drawPanelBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
+    // сборка группы фильтров
     QVBoxLayout* cLayout = new QVBoxLayout();
     QButtonGroup* filterGroup = new QButtonGroup();
     QRadioButton* noFilter = new QRadioButton(tr("No filter"),this);
@@ -49,9 +53,11 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     filterGroup->addButton(noFilter, 0);
     filterGroup->addButton(bilinearFilter, 1);
     filterGroup->addButton(mipMapFilter, 2);
+    // обработчики переключателей фильтров
     connect(filterGroup, SIGNAL(buttonClicked(int)), &drawPanel->getTexture(), SLOT(setFilter(int)));
     connect(filterGroup, SIGNAL(buttonClicked(int)), drawPanel, SLOT(repaint_square()));
 
+    // добавление радиоточек на виджеты
     QGroupBox* filterBox = new QGroupBox(tr("Choose fitler type:"),this);
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(noFilter);
@@ -59,17 +65,21 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     vbox->addWidget(mipMapFilter);
     filterBox->setLayout(vbox);
     noFilter->setChecked(true);
-    cLayout->addWidget(filterBox);
+
+    // присоединение контроллеров к области управления
     cLayout->addWidget(rotateContr);
     cLayout->addWidget(scaleXContr);
     cLayout->addWidget(scaleYContr);
+    cLayout->addWidget(filterBox);
+
+    // настройка области управления
     controllersBox->setLayout(cLayout);
     cLayout->setSizeConstraint(QLayout::SetFixedSize);
     controllersBox->setMinimumSize(250, h);
     controllersBox->setFixedSize(250, h);
     controllersBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-
+    // глобальная сборка всего окна
     QWidget * center = new QWidget(this);
     QHBoxLayout* hlayout = new QHBoxLayout();
     hlayout->addWidget(drawPanelBox);
@@ -80,44 +90,38 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     center->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     center->setLayout(hlayout);
 
-
-
+    // установка меню и события выбора файла
     QMenuBar *menuBar = new QMenuBar(this);
     QMenu* menu = new QMenu(tr("File"), menuBar);
     QAction* openAction = menu->addAction(tr("Open"));
-
     QObject::connect(openAction, SIGNAL(triggered(bool)), this, SLOT(openClicked(bool)));
 
-
     menuBar->addMenu(menu);
-
     this->setMenuBar(menuBar);
 
     setCentralWidget(center);
-
-
 }
 
-
-void MainWindow::openClicked(bool)
-{
-    // TODO:
-    // open dialog
+// обработчик события выбора пункта меню Открыть
+void MainWindow::openClicked(bool){
     QFileDialog fileDialog(this);
     fileDialog.deleteLater();
     fileDialog.setFileMode( QFileDialog::ExistingFile);
+    // отображать файлы только формата png
     fileDialog.setNameFilter(tr("*.png"));
+
+    // запуск диалога выбора файла
     QStringList fileNames;
-    if (fileDialog.exec())
+    if(fileDialog.exec())
         fileNames = fileDialog.selectedFiles();
     else {
         return;
     }
+
     try {
         drawPanel->open(fileNames.at(0).toStdString());
     } catch(...) {
-        // TODO:
-
+        // TODO: обработка ошибки
     }
 
 }

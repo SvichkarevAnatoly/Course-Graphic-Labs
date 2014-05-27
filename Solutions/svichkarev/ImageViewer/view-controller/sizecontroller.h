@@ -8,14 +8,12 @@
 #include <QLayout>
 #include <QSpinBox>
 
-
-class SizeController : public QWidget
-{
+// класс, упрощающий создания контроллов
+class SizeController : public QWidget{
     Q_OBJECT
     QGridLayout layout;
     QLabel label;
     QDoubleSpinBox spinEditor;
-
 
     double min;
     double max;
@@ -28,7 +26,6 @@ protected slots:
     void setValue(double v);
 signals:
     void valueChanged(double newValue);
-
 };
 
 #endif // SIZECONTROLLER_H

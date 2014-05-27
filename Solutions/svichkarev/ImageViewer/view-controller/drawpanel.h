@@ -6,8 +6,8 @@
 #include "texture/square.h"
 #include "canvas/canvas.h"
 
-class DrawPanel : public QWidget, public Canvas
-{
+// область для рисования в виде виджета
+class DrawPanel : public QWidget, public Canvas{
     Q_OBJECT
     Square square;
     Texture texture;

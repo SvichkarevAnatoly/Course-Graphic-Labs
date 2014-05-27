@@ -2,7 +2,6 @@
 #include <QPainter>
 #include <QDebug>
 
-
 DrawPanel::DrawPanel(int w, int h,   QWidget *parent) :
     QWidget(parent),Canvas(w,h),square(w,w/2,h/2), texture(w)
 {
