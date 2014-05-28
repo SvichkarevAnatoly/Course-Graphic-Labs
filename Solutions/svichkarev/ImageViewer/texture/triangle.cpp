@@ -60,12 +60,15 @@ void Triangle::setMaxY(int maxY){
     this->maxY = maxY;
 }
 
-//?
 void Triangle::transform(std::vector<TexturedPoint> &new_points){
-    double tr_mat[3][2];    
-    double radians = currAngle * RAD_IN_GRAD;// TODO : radians теряет точность
+    double tr_mat[3][2];
+
+    double radians = currAngle * RAD_IN_GRAD;
+
     double sinval = sin(radians);
     double cosval = cos(radians);
+
+    // матрица преобразования( сжатие по осям и поворот )
     tr_mat[0][0] = currScaleX * cosval;
     tr_mat[0][1] = currScaleX * sinval;
     tr_mat[1][0] = -currScaleY * sinval;
@@ -73,6 +76,7 @@ void Triangle::transform(std::vector<TexturedPoint> &new_points){
     tr_mat[2][0] = rotCenterX*(1-currScaleX*cosval) + currScaleY * rotCenterY*sinval;
     tr_mat[2][1] = rotCenterY*(1-currScaleY*cosval) - currScaleX * rotCenterX*sinval;
 
+    // обрабатываем точки треугольника преобразованием
     for (int i = 0; i < (int) points.size(); ++i) {
         double x0 = points[i].x();
         double y0 = points[i].y();
@@ -80,19 +84,23 @@ void Triangle::transform(std::vector<TexturedPoint> &new_points){
         double x = tr_mat[0][0]*x0+ tr_mat[1][0]*y0+tr_mat[2][0];
         double y = tr_mat[0][1]*x0+ tr_mat[1][1]*y0+tr_mat[2][1];
 
+        // текстурные координаты остаются преждними
         TexturedPoint new_point(x,y, points[i].getTexX(), points[i].getTexY());
         new_points.push_back(new_point);
     }
 }
 
-//?
+// отрисовка из прошлой лабы, только берём цвета из текстуры
 void Triangle::draw(Canvas& canvas, Texture* texture = 0) {
     std::vector<TexturedPoint> points;
+
+    // преобразование и упорядочивание по x
     transform(points);
     std::sort(points.begin(), points.end());
 
     std::vector<Edge> edges;
 
+    // установка границ
     int minY = (points.front().y() < 0) ? 0: points.front().y();
     int maxY = (points.back().y() < this->maxY) ? points.back().y() : this->maxY - 1;
 
@@ -142,11 +150,9 @@ void Triangle::draw(Canvas& canvas, Texture* texture = 0) {
                 curPoint.calcTextureCoordinates(borderX.front(),borderX.back());
 
                 if (0 == texture) {
-
+                    // если текстуры нет( то как градиент )
                     canvas.drawPixel(x, curY, TexturedPoint::transformToColor(curPoint.getTexX(), curPoint.getTexY()));
-                }
-                else {
-
+                } else {
                     canvas.drawPixel(x, curY, texture->get_color(curPoint));
                 }
             }

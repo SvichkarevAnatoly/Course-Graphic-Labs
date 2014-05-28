@@ -29,7 +29,7 @@ public:
     static QColor transformToColor(double tx, double ty);
     static bool compX(const TexturedPoint& a, const TexturedPoint& b);
 
-    // перегрузка сравнения двух точек по их y компоненте
+    // перегрузка сравнения двух точек по их y компоненте(для сортировки)
     friend bool operator<(const TexturedPoint& a, const TexturedPoint& b)  {
         return a.y() < b.y();
     }

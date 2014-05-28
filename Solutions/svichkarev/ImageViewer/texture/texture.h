@@ -10,8 +10,7 @@
 #include <QColor>
 #include <QPoint>
 
-class Texture : public QObject
-{
+class Texture : public QObject{
     Q_OBJECT
 private:
     static Filter simpleFilter;

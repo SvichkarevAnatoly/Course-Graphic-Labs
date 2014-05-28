@@ -4,21 +4,18 @@
 #include <QImage>
 #include <QDebug>
 
-
 Filter Texture::simpleFilter;
 Bilinear Texture::bilinearFilter;
 Mipmapper Texture::mipmapper;
 
-Texture::Texture(int max_size) : filter(0), loaded (false), max_size(max_size)
-{
+Texture::Texture(int max_size) : filter(0), loaded (false), max_size(max_size){
+    // простой фильтр
     filter = &simpleFilter;
     this->max_size= find2(max_size);
     scaleX = scaleY = 1;
 }
 
-
 Texture::~Texture() {
-    // RAII
     std::vector<QImage*>::iterator iter = LODs.begin();
 
     while (iter != LODs.end()){
@@ -27,6 +24,7 @@ Texture::~Texture() {
     }
 }
 
+// поиск степени двойки
 int Texture::find2(int a){
     int m = 1;
     while ((a & (a + 1)) != 0)
@@ -35,10 +33,10 @@ int Texture::find2(int a){
     return a;
 }
 
+// гетеры и сетеры
 void Texture::setScaleX(double scaleX){
     this->scaleX = scaleX;
 }
-
 
 void Texture::setScaleY(double scaleY){
     this->scaleY = scaleY;
@@ -52,10 +50,12 @@ double Texture::getScaleY() const {
     return scaleY;
 }
 
+//?
 void Texture::buildLODs(){
     if (!isLoaded()){
         return;
     }
+
     std::vector<QImage*>::iterator iter = LODs.begin();
 
     while (iter != LODs.end()){
@@ -92,45 +92,46 @@ void Texture::buildLODs(){
 
         LODs.push_back(cur_lod);
     }
-    qDebug()<<LODs.size();
+    //qDebug()<<LODs.size();
 }
 
-
-
-void Texture::setFilter(const int filterType)
-{
+// установка одного из фильтров
+void Texture::setFilter(const int filterType){
     if (filter->getType() == filterType) return;
 
     if (filterType == simpleFilter.getType()) {
-        qDebug() << "simple!";
+        qDebug() << "simple";
         filter = &simpleFilter;
     }
     else if (filterType == bilinearFilter.getType()) {
+        qDebug() << "bi";
         filter = &bilinearFilter;
     } else {
-        // TODO
-        qDebug() << "MIP";
+        qDebug() << "mip";
         filter = &mipmapper;
     }
 }
 
+// загрузка текстуры из файла
 void Texture::load(const std::string &image_src) {
-
-    qDebug() << "LOAD";
+    qDebug() << "Загрузка текстуры";
     QPixmap pixmap;
     pixmap.load(QObject::tr((image_src.c_str())));
 
+    // квадратная картинка
     int width = pixmap.width();
     int height = pixmap.height();
+    qDebug() << width << height;
     int size = width < height ? width : height;
 
-
+    // размер - степень двойки
     size = find2(size);
 
+    // ограничитель размера
     if (size > max_size) size = max_size;
+
     texel_size = 1.0/size;
     QImage raw_image = pixmap.toImage();
-
     image = new QImage(raw_image.copy(0, 0, size, size));
     qDebug() << size << max_size;
 
@@ -138,9 +139,10 @@ void Texture::load(const std::string &image_src) {
     buildLODs();
 }
 
+// получение цвета пропускаем через фильтр
 QColor Texture::get_color(const TexturedPoint &point) {
     if (!loaded) {
-        return Qt::black; // TODO:
+        return Qt::black;
     }
 
     return filter->filter(this, point);

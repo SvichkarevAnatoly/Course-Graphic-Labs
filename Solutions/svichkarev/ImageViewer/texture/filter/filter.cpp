@@ -1,6 +1,7 @@
 #include "filter.h"
 #include "texture/texture.h"
 #include <QDebug>
+
 Filter::Filter( )
 {
     type = 0;
