@@ -92,7 +92,7 @@ void Texture::buildLODs(){
 
         LODs.push_back(cur_lod);
     }
-    //qDebug()<<LODs.size();
+    qDebug()<<"LODs level "<<LODs.size();
 }
 
 // установка одного из фильтров
