@@ -27,10 +27,6 @@ DrawPanel::~DrawPanel(){
     delete imgBuffer;
 }
 
-SetPolygons & DrawPanel::getPolygons(){
-    return polygons;
-}
-
 // вызывается в repaint()
 //отвечает так же за перерисовку при изменении окна
 void DrawPanel::paintEvent( QPaintEvent * ){
@@ -45,25 +41,8 @@ void DrawPanel::paintEvent( QPaintEvent * ){
 
     painter.refreshImageBuffer( imgBuffer );
 
-    bool flagDraw = false;
-
-    if( ! polygons.isEmptyCurrentPolygon() ){
-        if( ! flagMagnet ){
-            // нарисовать кружок рядом с начальной точкой
-            painter.drawCircle( polygons.getFirstPointCurrentPolygon(), CLOSE_DISTANCE );
-        } else{ // TODO: отрисовка сразу при автозамыкании
-            polygons.addPoint( mouseCurPoint );
-            polygons.draw( painter );
-            polygons.removeLastPoint();
-            flagDraw = true;
-        }
-        painter.setColor( colorCurEdge );
-        painter.drawLine( polygons.getLastPoint(), mouseCurPoint );
-    }
-
-    if( ! flagDraw ){
-        polygons.draw( painter );
-    }
+    // TODO: здесь отрисовка
+    painter.drawLine( 10, 10, 30, DEFAULT_MAIN_COLOR );
 
     painter.drawImage( this );
 
@@ -73,7 +52,7 @@ void DrawPanel::paintEvent( QPaintEvent * ){
 // обработка нажатия на панеле
 //всё действо через этот метод
 void DrawPanel::mousePressEvent(QMouseEvent * event){
-    if( event->button() == Qt::LeftButton ){
+    /*if( event->button() == Qt::LeftButton ){
         // преобразуем координаты в систему центра экрана
         int xCoord = event->pos().x() - width() / 2;
         int yCoord = event->pos().y() - height() / 2;
@@ -100,12 +79,14 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
 
         update();
         event->accept();
-    }
+    }*/
+    update();
+    event->accept();
 }
 
 // для протягивания прямой за мышкой
 bool DrawPanel::eventFilter(QObject *, QEvent * event){
-    if( event->type() == QEvent::MouseMove ){
+    /*if( event->type() == QEvent::MouseMove ){
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>( event );
 
         int xCoord = mouseEvent->pos().x() - width() / 2;
@@ -145,7 +126,7 @@ bool DrawPanel::eventFilter(QObject *, QEvent * event){
 
         // нарисовать отрезок до мышки
         update();
-    }
+    }*/
 
     return false;
 }

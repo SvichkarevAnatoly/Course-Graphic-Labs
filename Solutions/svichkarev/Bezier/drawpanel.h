@@ -1,10 +1,10 @@
 #ifndef DRAWPANEL_H
 #define DRAWPANEL_H
 
-#include "setpolygons.h"
-
 #include <QWidget>
 #include <QPaintEvent>
+
+#include "mqpainter.h"
 
 class DrawPanel : public QWidget{
 public:
@@ -24,8 +24,6 @@ private:
     MQPainter painter;
     QImage * imgBuffer;
 
-    SetPolygons polygons;
-
     QPoint mouseCurPoint;
     QColor colorCurEdge;
 
@@ -34,8 +32,6 @@ private:
 public:
     DrawPanel( QWidget *parent );
     virtual ~DrawPanel();
-
-    SetPolygons & getPolygons();
 
 private:
     /*Для нормальной работы при измении размеров окна нужно
