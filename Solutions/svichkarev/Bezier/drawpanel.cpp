@@ -48,12 +48,12 @@ void DrawPanel::paintEvent( QPaintEvent * ){
     QPoint p4(200, 0);
 
     painter.setColor( DEFAULT_MAIN_COLOR );
-    painter.drawLine( p1, p2 );
+    painter.drawLine( mouseCurPoint, p2 );
     painter.drawLine( p2, p3 );
     painter.drawLine( p3, p4 );
 
     painter.setColor( DEFAULT_WARNING_COLOR );
-    painter.drawBezier( p1, p2, p3, p4 );
+    painter.drawBezier( mouseCurPoint, p2, p3, p4 );
 
     painter.drawImage( this );
 
@@ -97,7 +97,7 @@ void DrawPanel::mousePressEvent(QMouseEvent * event){
 
 // для протягивания прямой за мышкой
 bool DrawPanel::eventFilter(QObject *, QEvent * event){
-    /*if( event->type() == QEvent::MouseMove ){
+    if( event->type() == QEvent::MouseMove ){
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>( event );
 
         int xCoord = mouseEvent->pos().x() - width() / 2;
@@ -105,39 +105,9 @@ bool DrawPanel::eventFilter(QObject *, QEvent * event){
         mouseCurPoint.setX( xCoord );
         mouseCurPoint.setY( yCoord );
 
-        // проверяем, если ещё многоугольник не замкнут, то тянем прямую к мышке
-        //и рисуем кружок у первой точки многоугольника
-        if( ! polygons.isEmptyCurrentPolygon() ){ // пустой полигон считаем замкнутым
-            // если число рёбер в полигоне больше 2, то можно попробовать замкнуть
-            if( polygons.getNumberEdgeCurrentPolygon() > 2 ){
-                // если точка близка к начальной, то примагнитить её
-                if( polygons.isNearClose( mouseCurPoint, CLOSE_DISTANCE ) ){
-                    QPoint checkPoint( polygons.getFirstPointCurrentPolygon() );
-                    if( ! polygons.isSelfIntersection( checkPoint ) ){
-                        mouseCurPoint = checkPoint;
-                        colorCurEdge = DEFAULT_AUTO_CLOSE_COLOR;
-                        flagMagnet = true;
-
-                        // нарисовать отрезок до мышки
-                        update();
-                        return false;
-                    }
-                } else{
-                    flagMagnet = false;
-                }
-            }
-
-        }
-
-        if( polygons.isSelfIntersection( mouseCurPoint ) ){
-            colorCurEdge = DEFAULT_WARNING_COLOR;
-        } else{
-            colorCurEdge = DEFAULT_MAIN_COLOR;
-        }
-
         // нарисовать отрезок до мышки
         update();
-    }*/
+    }
 
     return false;
 }
