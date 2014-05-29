@@ -12,9 +12,6 @@ public:
     static const int DEFAULT_HEIGHT = 500;
     static const int DEFAULT_WIDTH = 500;
 
-    // радиус окружности автозамыкания
-    static const int CLOSE_DISTANCE = 10;
-
     // палитра приложения
     static const QColor DEFAULT_BACKGROUND_COLOR;
     static const QColor DEFAULT_MAIN_COLOR;
@@ -25,10 +22,12 @@ private:
     QImage * imgBuffer;
 
     QPoint mouseCurPoint;
-    QColor colorCurEdge;
 
     // флаг примагничивания
     bool flagMagnet;
+    int indexUnmagnedPoint;
+
+    QPoint anchors[4];
 public:
     DrawPanel( QWidget *parent );
     virtual ~DrawPanel();
@@ -41,8 +40,8 @@ private:
     virtual void mousePressEvent( QMouseEvent * event);
     virtual bool eventFilter(QObject *, QEvent *);
 
-    // проверка возможности замыкания контура
-    void checkNearClose( const QPoint & checkPoint );
+    // определение ближайшей точки
+    void findNearest();
 };
 
 #endif // DRAWPANEL_H
