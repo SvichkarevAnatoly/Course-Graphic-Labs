@@ -13,13 +13,11 @@ HEADERS += \
            idrawable.h \
     mqpainter.h \
     setpolygons.h \
-    edge.h \
-    aetedge.h
+    edge.h
 SOURCES += \
            drawpanel.cpp \
            main.cpp \
            mainwindow.cpp \
     mqpainter.cpp \
     setpolygons.cpp \
-    edge.cpp \
-    aetedge.cpp
+    edge.cpp
