@@ -2,6 +2,8 @@
 
 #include <QPainter>
 
+#include <math.h>
+
 MQPainter::MQPainter( QImage * im, const QColor & c ):
     img( im ), color( c )
 {
@@ -86,6 +88,60 @@ void MQPainter::drawLine( const QPoint & p1, const QPoint & p2 ){
             y1 += signY;
         }
     }
+}
+
+// Функция обёртка
+void MQPainter::drawBezier( const QPoint & p1, const QPoint & p2,
+                 const QPoint & p3, const QPoint & p4){
+
+    recursive_bezier( p1.x(), p1.y(), p2.x(), p2.y(),
+                      p3.x(), p3.y(), p4.x(), p4.y() );
+}
+
+// рекурсивная функция деления пополам
+void MQPainter::recursive_bezier(double x1, double y1,
+                      double x2, double y2,
+                      double x3, double y3,
+                      double x4, double y4){
+
+    double m_distance_tolerance = 0.25;
+
+   // Вычислить все средние точек отрезков
+   //----------------------
+   double x12  = (x1 + x2) / 2;
+   double y12  = (y1 + y2) / 2;
+   double x23  = (x2 + x3) / 2;
+   double y23  = (y2 + y3) / 2;
+   double x34  = (x3 + x4) / 2;
+   double y34  = (y3 + y4) / 2;
+   double x123  = (x12 + x23) / 2;
+   double y123  = (y12 + y23) / 2;
+   double x234  = (x23 + x34) / 2;
+   double y234  = (y23 + y34) / 2;
+   double x1234 = (x123 + x234) / 2;
+   double y1234 = (y123 + y234) / 2;
+
+   // Попытка аппроксимировать всю кривую одним отрезком
+     //------------------
+     double dx = x4-x1;
+     double dy = y4-y1;
+
+     double d2 = fabs(((x2 - x4) * dy - (y2 - y4) * dx));
+     double d3 = fabs(((x3 - x4) * dy - (y3 - y4) * dx));
+
+   if( (d2 + d3)*(d2 + d3) < m_distance_tolerance * (dx*dx + dy*dy) ){
+      // Нарисовать отрезок и закончить
+      //----------------------
+      //draw_line(x1, y1, x4, y4);
+       QPoint p1(x1, y1);
+       QPoint p4(x4, y4);
+       drawLine( p1, p4 );
+   } else{
+      // Продолжить деление
+      //----------------------
+      recursive_bezier(x1, y1, x12, y12, x123, y123, x1234, y1234);
+      recursive_bezier(x1234, y1234, x234, y234, x34, y34, x4, y4);
+   }
 }
 
 void MQPainter::drawLine( int y, int startX, int endX, const QColor & color ){

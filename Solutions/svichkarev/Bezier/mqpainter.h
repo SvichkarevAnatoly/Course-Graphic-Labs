@@ -15,6 +15,10 @@ public:
     void drawLine( const QPoint & p1, const QPoint & p2 );
     void drawCircle( const QPoint & center, int radius );
 
+    // NEW: отрисовка кубической кривой Безье
+    void drawBezier( const QPoint & p1, const QPoint & p2,
+                     const QPoint & p3, const QPoint & p4);
+
     // закрасить линию в многоугольнике
     void drawLine( int y, int startX, int endX, const QColor & color );
 
@@ -31,6 +35,11 @@ public:
 private:
     QImage * img;
     QColor color;
+
+    void recursive_bezier(double x1, double y1,
+                          double x2, double y2,
+                          double x3, double y3,
+                          double x4, double y4);
 };
 
 #endif // MQPAINTER_H

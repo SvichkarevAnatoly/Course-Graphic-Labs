@@ -42,7 +42,18 @@ void DrawPanel::paintEvent( QPaintEvent * ){
     painter.refreshImageBuffer( imgBuffer );
 
     // TODO: здесь отрисовка
-    painter.drawLine( 10, 10, 30, DEFAULT_MAIN_COLOR );
+    QPoint p1(0, 0);
+    QPoint p2(0, 100);
+    QPoint p3(200, 200);
+    QPoint p4(200, 0);
+
+    painter.setColor( DEFAULT_MAIN_COLOR );
+    painter.drawLine( p1, p2 );
+    painter.drawLine( p2, p3 );
+    painter.drawLine( p3, p4 );
+
+    painter.setColor( DEFAULT_WARNING_COLOR );
+    painter.drawBezier( p1, p2, p3, p4 );
 
     painter.drawImage( this );
 
