@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "fileWorker.h"
 
 #include <QGroupBox>
 #include <QMenu>
@@ -27,61 +26,6 @@ MainWindow::MainWindow( QWidget * parent ) :
     // устанавливаем начинку главному виджету
     setCentralWidget(container);
 
-    // Создание меню и привязываем действия
-    QMenuBar *menuBar = new QMenuBar( this );
-    QMenu* menu = new QMenu(tr("File"), menuBar);
-    QAction* openAction = menu->addAction( tr("Open") );
-    QAction* saveAction = menu->addAction( tr("Save") );
-
-    QObject::connect( openAction, SIGNAL( triggered() ), this, SLOT( openListener() ));
-    QObject::connect( saveAction, SIGNAL( triggered() ), this, SLOT( saveListener() ));
-
-    menuBar->addMenu( menu );
-
-    // добавляем меню и заголовок изменяем
-    setMenuBar( menuBar );
-    setWindowTitle( tr("Polygon") );
-}
-
-void MainWindow::openListener(){
-    // open dialog
-    QFileDialog * fileDialog = new QFileDialog( this );
-    fileDialog->setFileMode( QFileDialog::ExistingFile );
-    QStringList fileNames;
-    if( fileDialog->exec() )
-        fileNames = fileDialog->selectedFiles();
-    else {
-        return;
-    }
-
-    fileDialog->deleteLater();
-
-    // очистить от прошлых полигонов
-    drawPanel->getPolygons().removeAll();
-
-    int PanelWidth = -1;
-    int PanelHeight = -1;
-
-    try {
-        fileWorker::readFileSettings( fileNames.at(0).toStdString(), drawPanel->getPolygons(), PanelWidth, PanelHeight );
-        if( ( PanelWidth > 0 ) && ( PanelHeight > 0 ) ){
-            drawPanel->setMinimumSize( PanelWidth, PanelHeight );
-        }
-    } catch(...) {
-        // TODO
-    }
-}
-
-void MainWindow::saveListener(){
-    QFileDialog* fileDialog = new QFileDialog( this );
-    fileDialog->setFileMode( QFileDialog::Directory );
-    fileDialog->setNameFilter( tr( "*.xml" ) );
-    QString filename = QFileDialog::getSaveFileName(fileDialog,
-                                                    tr( "Save settings" ),
-                                                    QDir::currentPath(),
-                                                    tr( "Documents (*.xml)" ) );
-
-    fileDialog->deleteLater();
-
-    fileWorker::writeFileSettings( filename.toStdString(), drawPanel->getPolygons(), drawPanel->geometry().width(), drawPanel->geometry().height() );
+    // заголовок изменяем
+    setWindowTitle( tr("Bezier") );
 }
